@@ -44,15 +44,15 @@ const validationSchema = {
 const validation = (req, res, next) => {
   return validationOfAPI(req, res, next, validationSchema, 'body')
 }
-const getAnsFromGPT = async (req, res, data) => {
+const getAnsFromGPT = async (req, res) => {
   try {
     console.log('Sending Question to GPT')
     const response = await openai.createCompletion({
       model: 'text-davinci-003',
       prompt: `This is a news article: 
-        ${data.context}
+        ${req.body.context}
         AskUs is a chatbot that answers any question within the scope of the above news article. If the question is outside the scope of the news article, AskUs will respond with "Sorry, I don't know. If the user acknowledges the answer or writes any form of 'okay' slang, AskUs will respond with 👍. Do not generate questions and answers on your own.
-        Question: ${data.question}
+        Question: ${req.body.question}
         Answer: `,
       temperature: 0,
       max_tokens: 256,
@@ -62,7 +62,7 @@ const getAnsFromGPT = async (req, res, data) => {
     })
     res.sendJson({
       type: __constants.RESPONSE_MESSAGES.SUCCESS,
-      data: { gptAns: response }
+      data: { data: response.data }
     })
   } catch (err) {
     return res.sendJson({

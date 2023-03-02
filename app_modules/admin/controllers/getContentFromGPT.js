@@ -44,12 +44,13 @@ const validationSchema = {
 const validation = (req, res, next) => {
   return validationOfAPI(req, res, next, validationSchema, 'body')
 }
-const getNewsFromGPT = async (req, res, data) => {
+const getNewsFromGPT = async (req, res) => {
   try {
     console.log('Sending News to GPT')
+    // console.log(req.body)
     const response = await openai.createCompletion({
       model: 'text-davinci-003',
-      prompt: `${data.context}
+      prompt: `${req.body.context}
         1. Create a summary of the above article in the range of 60-80 words.
         2. Create a headline for the summary.
         3. Create a tweet for the news article.
