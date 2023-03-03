@@ -3,7 +3,6 @@ const configuration = new Configuration({
   apiKey: process.env.OPENAI_API_KEY
 })
 const openai = new OpenAIApi(configuration)
-const axios = require('axios')
 class GptService {
   async getAnsFromGPT (context, question) {
     console.log('Sending Question to GPT')
@@ -40,14 +39,6 @@ class GptService {
       presence_penalty: 0
     })
     return response.data
-  }
-
-  async getNewsFromGNews (categoryName, from, to) {
-    console.log('Fetching News From API')
-    const news = await axios.get(
-        `https://gnews.io/api/v4/top-headlines?category=${categoryName}&token=${process.env.TOKEN}&expand=content&lang=en&country=in&to=${to}&from=${from}`
-    )
-    return news.data
   }
 }
 
