@@ -4,7 +4,7 @@ const fs = require('fs')
 const path = require('path')
 const moment = require('moment')
 const cache = require('./../middlewares/requestCacheMiddleware')
-const UserActivityLogs = require('./../middlewares/UserActivityLogs')
+// const UserActivityLogs = require('./../middlewares/UserActivityLogs')
 const __constants = require('./../config/constants')
 const sendResponse = require('../responses/sendResponse')
 
@@ -36,7 +36,7 @@ module.exports = async function (app) {
     try {
       res.json = async (body) => {
         old(body)
-        if (req.logUserActivities) { UserActivityLogs.userActivityLogMiddleware(req, body) }
+        // if (req.logUserActivities) { UserActivityLogs.userActivityLogMiddleware(req, body) }
         if (res && res.statusCode && res.statusCode >= 200 && res.statusCode < 300 && req && !req.isCachedResponse && req.toCached) {
           const key = req.originalUrl + '_' + (req && req.body && Object.keys(req.body).length > 0 ? JSON.stringify(req.body) : '')
           body = JSON.stringify(body)

@@ -3,7 +3,7 @@ const router = express.Router()
 const __constants = require('../../../config/constants')
 const validationOfAPI = require('../../../middlewares/validation')
 const cache = require('../../../middlewares/requestCacheMiddleware')
-const axios = require('axios')
+const GptService = require('../../../services/gpt/GptService')
 
 /**
  * @namespace -ADMIN-MODULE-
@@ -27,25 +27,22 @@ const validationSchema = {
   type: 'object',
   required: true,
   properties: {
-    username: {
+    context: {
       type: 'string',
-      required: false,
-      unique: true,
-      minLength: 2,
-      maxLength: 20
+      required: true
     }
   }
 }
 const validation = (req, res, next) => {
   return validationOfAPI(req, res, next, validationSchema, 'body')
 }
-const getGNews = async (req, res, data) => {
+const getNewsFromGPT = async (req, res) => {
   try {
-    console.log('Fetching News From API')
-    const news = await axios.get(
-        `https://gnews.io/api/v4/top-headlines?category=${data.categoryName}&token=${process.env.TOKEN}&expand=content&lang=en&country=in&to=${data.to}&from=${data.from}`
-    )
-    res.sendJson({ type: __constants.RESPONSE_MESSAGES.SUCCESS, data: { news: news.data } })
+    const result = await GptService.getContentFromGPT(req.body.context)
+    res.sendJson({
+      type: __constants.RESPONSE_MESSAGES.SUCCESS,
+      data: { gpt: result }
+    })
   } catch (err) {
     return res.sendJson({
       type: err.type || __constants.RESPONSE_MESSAGES.SERVER_ERROR,
@@ -54,5 +51,5 @@ const getGNews = async (req, res, data) => {
   }
 }
 
-router.post('/getGNews', cache.route(10), validation, getGNews)
+router.post('/getNewsFromGPT', cache.route(10), validation, getNewsFromGPT)
 module.exports = router

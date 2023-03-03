@@ -10,7 +10,7 @@ const __constants = require('./config/constants')
 const helmet = require('helmet')
 const authMiddleware = require('./middlewares/auth/authentication')
 const numCPUs = __config.clusterNumber || 0
-const fs = require('fs')
+// const fs = require('fs')
 
 class httpApiWorker {
   constructor () {
@@ -134,8 +134,8 @@ class httpApiWorker {
     })
 
     // to avoid issue of monggose schema register which comes if any schema is used in populate before being required anywhere
-    const normalizedPath = path.join(__dirname, 'mongooseSchema')
-    fs.readdirSync(normalizedPath).forEach(file => { if (file.endsWith('.js')) require(path.join(normalizedPath, file)) })
+    // const normalizedPath = path.join(__dirname, 'mongooseSchema')
+    // fs.readdirSync(normalizedPath).forEach(file => { if (file.endsWith('.js')) require(path.join(normalizedPath, file)) })
   }
 }
 
