@@ -3,7 +3,7 @@ const router = express.Router()
 const __constants = require('../../config/constants')
 const validationOfAPI = require('../../middlewares/validation')
 const cache = require('../../middlewares/requestCacheMiddleware')
-const GptService = require('../../services/gpt/GptService')
+const GnewsService = require('../../services/gnews/GnewsService')
 
 /**
  * @namespace -GNEWS-MODULE-
@@ -46,7 +46,7 @@ const validation = (req, res, next) => {
 }
 const getGNews = async (req, res) => {
   try {
-    const result = await GptService.getNewsFromGNews(req.body.categoryName, req.body.from, req.body.to)
+    const result = await GnewsService.getNewsFromGNews(req.body.categoryName, req.body.from, req.body.to)
     res.sendJson({ type: __constants.RESPONSE_MESSAGES.SUCCESS, data: { news: result } })
   } catch (err) {
     return res.sendJson({
