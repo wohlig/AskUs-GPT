@@ -13,7 +13,7 @@ const gptServices = require('../../../services/gpt/GptService')
 /**
  * @memberof -GPT-module-
  * @name getAnsFromGPT
- * @path {post} /api/gpt/getAnsFromGPT
+ * @path {POST} /api/gpt/getAnsFromGPT
  * @description Bussiness Logic :- In getAnsFromGPT API, we get answers of the question from gpt.
  * @response {string} ContentType=application/json - Response content type.
  * @response {string} metadata.msg=Success  - Response got successfully.

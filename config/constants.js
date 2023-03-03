@@ -1,4 +1,4 @@
-const APP_NAME = 'framework'
+const APP_NAME = 'askus'
 const DB_NAME = 'framework'
 const CUSTOM_CONSTANT = {
   DEV_ENV: 'development',

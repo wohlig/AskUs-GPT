@@ -1,26 +1,26 @@
 const express = require('express')
 const router = express.Router()
-const __constants = require('../../../config/constants')
-const validationOfAPI = require('../../../middlewares/validation')
-const cache = require('../../../middlewares/requestCacheMiddleware')
-const GptService = require('../../../services/gpt/GptService')
+const __constants = require('../../config/constants')
+const validationOfAPI = require('../../middlewares/validation')
+const cache = require('../../middlewares/requestCacheMiddleware')
+const GptService = require('../../services/gpt/GptService')
 
 /**
- * @namespace -ADMIN-MODULE-
- * @description API’s related to ADMIN module.
+ * @namespace -GNEWS-MODULE-
+ * @description API’s related to GNEWS module.
  */
 
 /**
- * @memberof -user-module-
- * @name getAdminCall
- * @path {GET} /api/user/getAdminCall
- * @description Bussiness Logic :- In getAdminCall API, we get all the users from db.
+ * @memberof -gnews-module-
+ * @name getNewsFromGNews
+ * @path {POST} /api/gnews/getNewsFromGNews
+ * @description Bussiness Logic :- In getNewsFromGNews API, we get all the news of the enabled categories.
  * @response {string} ContentType=application/json - Response content type.
  * @response {string} metadata.msg=Success  - Response got successfully.
  * @response {string} metadata.data - It will return the data.
- * @code {200} if the msg is success the api returns the token (access token).
- * @author Vasim Gujrati, 14th December 2022
- * *** Last-Updated :- Vasim Gujrati, 14th December 2022 ***
+ * @code {200} if the msg is success the api returns the news of the enabled categories.
+ * @author Bilal Sani, 3rd March 2023
+ * *** Last-Updated :- Bilal Sani, 3rd March 2023 ***
  */
 
 const validationSchema = {

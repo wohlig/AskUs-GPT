@@ -6,21 +6,21 @@ const cache = require('../../../middlewares/requestCacheMiddleware')
 const GptService = require('../../../services/gpt/GptService')
 
 /**
- * @namespace -ADMIN-MODULE-
- * @description API’s related to ADMIN module.
+ * @namespace -GPT-MODULE-
+ * @description API’s related to GPT module.
  */
 
 /**
- * @memberof -user-module-
- * @name getAdminCall
- * @path {GET} /api/user/getAdminCall
- * @description Bussiness Logic :- In getAdminCall API, we get all the users from db.
+ * @memberof -GPT-module-
+ * @name getContentFromGPT
+ * @path {POST} /api/gpt/getContentFromGPT
+ * @description Bussiness Logic :- In getContentFromGPT API, we get summary, headline, tweet and tags of the context from gpt
  * @response {string} ContentType=application/json - Response content type.
  * @response {string} metadata.msg=Success  - Response got successfully.
  * @response {string} metadata.data - It will return the data.
- * @code {200} if the msg is success the api returns the token (access token).
- * @author Vasim Gujrati, 14th December 2022
- * *** Last-Updated :- Vasim Gujrati, 14th December 2022 ***
+ * @code {200} if the msg is success the api returns the summary, headline, tweet and tags of the context.
+ * @author Bilal Sani, 3rd March 2023
+ * *** Last-Updated :- Bilal Sani, 3rd March 2023 ***
  */
 
 const validationSchema = {
