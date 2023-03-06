@@ -1,9 +1,9 @@
 const express = require('express')
 const router = express.Router()
-const __constants = require('../../config/constants')
-const validationOfAPI = require('../../middlewares/validation')
-const cache = require('../../middlewares/requestCacheMiddleware')
-const GnewsService = require('../../services/gnews/GnewsService')
+const __constants = require('../../../config/constants')
+const validationOfAPI = require('../../../middlewares/validation')
+const cache = require('../../../middlewares/requestCacheMiddleware')
+const GnewsService = require('../../../services/gnews/GnewsService')
 
 /**
  * @namespace -GNEWS-MODULE-
