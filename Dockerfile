@@ -16,4 +16,5 @@ EXPOSE 7001
 
 # RUN ./node_modules/.bin/jsdoc -c ./jsdoc.conf -d public/js-docs
 
-CMD ["npm", "run", "develop"]
+CMD ["npm", "run", "start"]
+
