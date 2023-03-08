@@ -25,20 +25,6 @@ class GptService {
       presence_penalty: 0
     })
     return response.data
-    // const response = await openai.createCompletion({
-    //   model: 'text-davinci-003',
-    //   prompt: `This is a news article:
-    //     ${context}
-    //     AskUs is a chatbot that answers any question within the scope of the above news article. If the question is outside the scope of the news article, AskUs will respond with "Sorry, I don't know". If the user acknowledges the answer or writes any form of 'okay' slang, AskUs will respond with 👍. Do not generate questions and answers on your own.
-    //     Question: ${question}
-    //     Answer: `,
-    //   temperature: 0,
-    //   max_tokens: 256,
-    //   top_p: 1,
-    //   frequency_penalty: 0,
-    //   presence_penalty: 0
-    // })
-    // return response.data
   }
 
   async getContentFromGPT (context) {
