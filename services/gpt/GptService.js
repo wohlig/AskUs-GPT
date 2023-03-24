@@ -33,17 +33,18 @@ class GptService {
       const response = await openai.createChatCompletion({
         model: 'gpt-3.5-turbo',
         messages: [
-          { role: 'system', content: 'You are a helpful assistant. First give the summary, label it as "Summary:", then the headline, label it as "Headline:" then the tweet, label it as "Tweet:" and finally the tags, label it as "Tags:". ' },
+          { role: 'system', content: 'You are a helpful assistant. First give the summary, label it as "Summary:", then the headline, label it as "Headline:" then the tweet, label it as "Tweet:", then the tags, label it as "Tags:" and finally the bullet points, label it as "Bullets:" ' },
           {
             role: 'user', content: `${context}
           1. Create a summary of the above article in the range of 60-80 words.
           2. Create a headline for the summary.
           3. Create a tweet for the news article.
-          4. Create tags for the above article.`
+          4. Create tags for the above article.
+          5. Give the same summary created above in bullet points.`
           }
         ],
         temperature: 0,
-        max_tokens: 256,
+        max_tokens: 500,
         top_p: 1,
         frequency_penalty: 0,
         presence_penalty: 0
