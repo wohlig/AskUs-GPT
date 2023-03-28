@@ -27,13 +27,13 @@ class GptService {
     return response.data
   }
 
-  async getContentFromGPT (context) {
+  async getContentFromGPT (context, lang) {
     console.log('Sending News to GPT')
     try {
       const response = await openai.createChatCompletion({
         model: 'gpt-3.5-turbo',
         messages: [
-          { role: 'system', content: 'You are a helpful assistant. First give the summary, label it as "Summary:", then the headline, label it as "Headline:" then the tweet, label it as "Tweet:", then the tags, label it as "Tags:" and finally the bullet points, label it as "Bullets:" ' },
+          { role: 'system', content: `You are a helpful assistant. First give the summary, label it as "Summary:", then the headline, label it as "Headline:" then the tweet, label it as "Tweet:", then the tags, label it as "Tags:" and finally the bullet points, label it as "Bullets:" and gave all these content in ${lang}` },
           {
             role: 'user', content: `${context}
           1. Create a summary of the above article in the range of 60-80 words.
