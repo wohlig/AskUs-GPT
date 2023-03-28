@@ -27,6 +27,7 @@ class GptService {
     return response.data
   }
 
+
   async getContentFromGPT (context, language) {
     console.log('Sending News to GPT')
     try {

@@ -39,6 +39,7 @@ const validation = (req, res, next) => {
 const getNewsFromGPT = async (req, res) => {
   try {
     const result = await GptService.getContentFromGPT(req.body.context, req.body.lang)
+
     res.sendJson({
       type: __constants.RESPONSE_MESSAGES.SUCCESS,
       data: { gpt: result }
