@@ -28,7 +28,7 @@ class GptService {
   }
 
   async getContentFromGPT (context, language) {
-    console.log('Sending News to GPT')
+    console.log('Sending News to GPT', language)
     try {
       const response = await openai.createChatCompletion({
         model: 'gpt-3.5-turbo',
