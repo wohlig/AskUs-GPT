@@ -46,7 +46,6 @@ const validation = (req, res, next) => {
 }
 const algoliaSearchQuery = async (req, res) => {
   try {
-    console.log('hello')
     const result = await AlgoliaService.searchQueryAlgolia(req.body.searchData, req.body.page, req.body.language, req.body.userId)
     res.sendJson({ type: __constants.RESPONSE_MESSAGES.SUCCESS, data: result })
   } catch (err) {
