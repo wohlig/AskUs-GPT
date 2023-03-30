@@ -30,20 +30,35 @@ class GptService {
   async getContentFromGPT (context, language) {
     console.log('Sending News to GPT', language)
     try {
-      const response = await openai.createChatCompletion({
-        model: 'gpt-3.5-turbo',
-        messages: [
+      let messages
+      if (language === 'English') {
+        messages = [
           { role: 'system', content: 'You are a helpful assistant. First give the summary, label it as "Summary:", then the headline, label it as "Headline:" then the tweet, label it as "Tweet:", then the tags, label it as "Tags:" and finally the bullet points, label it as "Bullets:" ' },
           {
             role: 'user',
             content: `${context}
-          1. Create a summary of the above article in ${language} language in the range of 60-80 words.
-          2. Create a headline for the summary in ${language} language.
+          1. Create a summary of the above article in the range of 60-80 words.
+          2. Create a headline for the summary.
           3. Create a tweet for the news article.
-          4. Create tags for the above article in ${language} language.
-          5. Give the same summary created above in bullet points in ${language} language.`
+          4. Create tags for the above article.
+          5. Give the same summary created above in bullet points.`
           }
-        ],
+        ]
+      } else {
+        messages = [
+          { role: 'system', content: 'You are a helpful assistant. First give the summary, label it as "Summary:", then the headline, label it as "Headline:", and finally the tags, label it as "Tags:" ' },
+          {
+            role: 'user',
+            content: `${context}
+          1. Create a summary of the above article in ${language} language the range of 60-80 words.
+          2. Create a headline for the summary in ${language} language.
+          3. Create tags for the above article in ${language} language.`
+          }
+        ]
+      }
+      const response = await openai.createChatCompletion({
+        model: 'gpt-3.5-turbo',
+        messages: messages,
         temperature: 0,
         max_tokens: 2048,
         top_p: 1,
