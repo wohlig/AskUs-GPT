@@ -1,6 +1,9 @@
 const algoliasearch = require('algoliasearch')
 const client = algoliasearch(process.env.ALGOLIA_APP_ID, process.env.ALGOLIA_ADMIN_API_KEY
 )
+const algoliarecommend = require('@algolia/recommend')
+const recommendClient = algoliarecommend(process.env.ALGOLIA_APP_ID, process.env.ALGOLIA_API_KEY
+)
 
 class AlgoliaService {
   async searchQueryAlgolia (searchData, pageNo, language, id) {
@@ -17,6 +20,17 @@ class AlgoliaService {
       page: pageNo - 1
     })
     return news
+  }
+
+  async algoliaTrendingNews (facetName, facetValue) {
+    const data = await recommendClient.getTrendingItems([
+      {
+        indexName: 'news',
+        facetName: facetName,
+        facetValue: facetValue
+      }
+    ])
+    return data
   }
 }
 module.exports = new AlgoliaService()

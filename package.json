@@ -39,6 +39,7 @@
     "standard": "^14.3.4"
   },
   "dependencies": {
+    "@algolia/recommend": "^4.16.0",
     "@elastic/elasticsearch": "^8.5.0",
     "algoliasearch": "^4.16.0",
     "axios": "^1.3.4",
