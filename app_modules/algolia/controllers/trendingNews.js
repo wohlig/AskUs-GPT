@@ -12,15 +12,15 @@ const AlgoliaService = require('../../../services/algolia/AlgoliaService')
 
 /**
  * @memberof -algolia-module-
- * @name searchQuery
- * @path {POST} /api/algolia/searchQuery
- * @description Bussiness Logic :- In searchQuery API, we get all the news based on the search query
+ * @name trendingNews
+ * @path {POST} /api/algolia/algoliaTrendingNews
+ * @description Bussiness Logic :- In trendingNews API, we get all the trending news based on all existing users actions
  * @response {string} ContentType=application/json - Response content type.
  * @response {string} metadata.msg=Success  - Response got successfully.
- * @response {string} metadata.data - It will return the news based on search query.
- * @code {200} if the msg is success the api returns the news based on the search query.
- * @author Bilal Sani, 29rd March 2023
- * *** Last-Updated :- Bilal Sani, 29rd March 2023 ***
+ * @response {string} metadata.data - It will return the trending news based on all existing users actions
+ * @code {200} if the msg is success the api returns the trending news based on all existing users actions
+ * @author Bilal Sani, 3rd April 2023
+ * *** Last-Updated :- Bilal Sani, 3rd April 2023 ***
  */
 
 const validationSchema = {
