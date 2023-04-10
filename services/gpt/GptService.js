@@ -49,7 +49,7 @@ class GptService {
           { role: 'system', content: 'You are a helpful assistant. First give the summary, label it as "Summary:", then the headline, label it as "Headline:", and finally the tags, label it as "Tags:" ' },
           {
             role: 'user',
-            content: `${context}
+            context: `${context}
           1. Create a summary of the above article in ${language} language the range of 60-80 words.
           2. Create a headline for the summary in ${language} language.
           3. Create tags for the above article in ${language} language.`
