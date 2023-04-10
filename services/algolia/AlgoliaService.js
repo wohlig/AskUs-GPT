@@ -13,12 +13,21 @@ class AlgoliaService {
     } else {
       newIndex = client.initIndex(`news_${language.toLowerCase()}`)
     }
-    const news = await newIndex.search(searchData, {
-      enablePersonalization: true,
-      userToken: id,
-      clickAnalytics: true,
-      page: pageNo - 1
-    })
+    let news
+    if (id !== '' || id !== undefined) {
+      news = await newIndex.search(searchData, {
+        enablePersonalization: true,
+        userToken: id,
+        clickAnalytics: true,
+        page: pageNo - 1
+      })
+    } else {
+      news = await newIndex.search(searchData, {
+        enablePersonalization: true,
+        clickAnalytics: true,
+        page: pageNo - 1
+      })
+    }
     return news
   }
 
