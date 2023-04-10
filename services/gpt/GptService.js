@@ -50,7 +50,7 @@ class GptService {
           {
             role: 'user',
             link: `${context}
-          1. Create a summary of the news article link provided above in ${language} language the range of 60-80 words.
+          1. Create a summary of the news article given on the link provided above in ${language} language the range of 60-80 words.
           2. Create a headline for the summary in ${language} language.
           3. Create tags for the above article in ${language} language.`
           }
