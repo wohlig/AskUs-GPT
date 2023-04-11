@@ -38,6 +38,10 @@ const validationSchema = {
     to: {
       type: 'string',
       required: true
+    },
+    lang: {
+      type: 'string',
+      required: true
     }
   }
 }
