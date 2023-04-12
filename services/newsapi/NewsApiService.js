@@ -5,6 +5,26 @@ class NewsAPiService {
     if (categoryName === 'breaking-news') {
       categoryName = language.toLowerCase()
     } else {
+      if (categoryName === 'nation') {
+        if (language === 'Gujarati' || language === 'Kannada' || language === 'Punjabi') {
+          categoryName = 'national'
+        }
+        if (language === 'Bengali') {
+          categoryName = 'state'
+        }
+      } else if (categoryName === 'world') {
+        if (language === 'Gujarati' || language === 'Kannada') {
+          categoryName = 'international'
+        }
+      } else if (categoryName === 'business') {
+        if (language === 'Kannada') {
+          categoryName = 'commercial'
+        }
+      } else if (categoryName === 'entertainment') {
+        if (language === 'Bengali') {
+          categoryName = 'movies'
+        }
+      }
       categoryName = language.toLowerCase() + '_' + categoryName.toLowerCase()
     }
     console.log('🚀 ~ file: NewsApiService.js:11 ~ NewsAPiService ~ getNewsFromNewsAPi ~ categoryName:', categoryName)
