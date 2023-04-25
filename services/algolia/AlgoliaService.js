@@ -45,7 +45,7 @@ class AlgoliaService {
         facetValue: facetValue
       }
     ])
-    return data
+    return data.results[0].hits
   }
 }
 module.exports = new AlgoliaService()
