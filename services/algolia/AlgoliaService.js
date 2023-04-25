@@ -14,7 +14,7 @@ class AlgoliaService {
       newIndex = client.initIndex(`news_${language.toLowerCase()}`)
     }
     let news
-    if (id !== '' || id !== undefined) {
+    if (id !== '' && id !== undefined) {
       const optionalFilters = []
       for (const item of blockedSources) {
         optionalFilters.push(`source : -${item}`)
