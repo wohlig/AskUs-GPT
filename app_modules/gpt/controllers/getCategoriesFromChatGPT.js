@@ -45,6 +45,7 @@ const assignCategoryFromChatGPT = async (req, res) => {
     const result = await gptServices.assignCategoryFromChatGPT(req.body.context, req.body.updatedCategories)
     res.sendJson({ type: __constants.RESPONSE_MESSAGES.SUCCESS, data: { data: result } })
   } catch (err) {
+    console.log('assignCategoryFromChatGPT Error', err)
     return res.sendJson({ type: err.type || __constants.RESPONSE_MESSAGES.SERVER_ERROR, err: err.err || err })
   }
 }

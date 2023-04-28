@@ -49,6 +49,7 @@ const algoliaSearchQuery = async (req, res) => {
     const result = await AlgoliaService.searchQueryAlgolia(req.body.searchData, req.body.page, req.body.language, req.body.userId, req.body.blockedSources)
     res.sendJson({ type: __constants.RESPONSE_MESSAGES.SUCCESS, data: result })
   } catch (err) {
+    console.log('algoliaSearchQuery Error', err)
     return res.sendJson({
       type: err.type || __constants.RESPONSE_MESSAGES.SERVER_ERROR,
       err: err.err || err

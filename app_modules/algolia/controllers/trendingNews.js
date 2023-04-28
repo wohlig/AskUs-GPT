@@ -43,6 +43,7 @@ const algoliaTrendingNews = async (req, res) => {
     const result = await AlgoliaService.algoliaTrendingNews(req.body.facetName, req.body.facetValue)
     res.sendJson({ type: __constants.RESPONSE_MESSAGES.SUCCESS, data: result })
   } catch (err) {
+    console.log('algoliaTrendingNews Error', err)
     return res.sendJson({
       type: err.type || __constants.RESPONSE_MESSAGES.SERVER_ERROR,
       err: err.err || err

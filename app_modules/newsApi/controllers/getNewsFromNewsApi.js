@@ -45,7 +45,7 @@ const getNewsAPi = async (req, res) => {
     const result = await NewsAPiService.getNewsFromNewsAPi(req.body.categoryName, req.body.language)
     res.sendJson({ type: __constants.RESPONSE_MESSAGES.SUCCESS, data: { news: result } })
   } catch (err) {
-    console.log(err)
+    console.log('getNewsAPi Error', err)
     return res.sendJson({
       type: err.type || __constants.RESPONSE_MESSAGES.SERVER_ERROR,
       err: err.err || err

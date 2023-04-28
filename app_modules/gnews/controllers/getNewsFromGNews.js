@@ -53,6 +53,7 @@ const getGNews = async (req, res) => {
     const result = await GnewsService.getNewsFromGNews(req.body.categoryName, req.body.from, req.body.to, req.body.lang)
     res.sendJson({ type: __constants.RESPONSE_MESSAGES.SUCCESS, data: { news: result } })
   } catch (err) {
+    console.log('getGNews Error', err)
     return res.sendJson({
       type: err.type || __constants.RESPONSE_MESSAGES.SERVER_ERROR,
       err: err.err || err

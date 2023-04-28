@@ -45,6 +45,7 @@ const getNewsFromGPT = async (req, res) => {
       data: { gpt: result }
     })
   } catch (err) {
+    console.log('getContentFromGPT Error', err)
     return res.sendJson({
       type: err.type || __constants.RESPONSE_MESSAGES.SERVER_ERROR,
       err: err.err || err
