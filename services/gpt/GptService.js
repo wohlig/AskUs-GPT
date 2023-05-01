@@ -59,10 +59,10 @@ class GptService {
           {
             role: 'user',
             content: `${context}
-          1. Create a summary of the news article given on the link provided above in ${language} language the range of 60-80 words.
-          2. Create a headline for the summary in ${language} language.
-          3. Create tags for the above article in ${language} language.
-          4. Categorise the above news article based on the given categories below. Each article may have multiple categories assigned to it, but make sure all the assigned categories must be selected from the given below categories only and no new category that is not a part of the below list will be assigned to the article. Give only the category names in a single line and remove any type of number before it.
+          1. Create a summary of the news article given on the link provided above strictly in ${language} language in the range of 60-80 words.
+          2. Create a headline for the summary strictly in ${language} language.
+          3. Create tags for the above article strictly in ${language} language.
+          4. Categorise the above news article based on the given categories below. Each article may have multiple categories assigned to it, but make sure all the assigned categories must be selected from the given below categories only and no new category that is not a part of the below list will be assigned to the article. Give only the category names in a single line and remove any type of number before it. Also be very precise while categorising the article.
           These are the news categories:
           ${updatedCategories}`
           }
