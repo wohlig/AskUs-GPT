@@ -10,7 +10,7 @@ class GptService {
     const response = await openai.createChatCompletion({
       model: 'gpt-3.5-turbo',
       messages: [
-        { role: 'system', content: `Your name is AskUs and you are a helpful chatbot. AskUs answers any question within the scope of the below news article. If the question is outside the scope of the news article, AskUs will respond with "I apologize, but I am unable to provide a response at this time as I do not possess the necessary information. Is there anything else I can assist you with?". If the user acknowledges the answer or writes any form of 'okay' slang, AskUs will respond with 👍. Do not generate questions and answers on your own. This is the context of the article: ${context}` },
+        { role: 'system', content: `Your name is AskUs and you are a helpful chatbot. AskUs answers any question within the scope of the below news article. If the question is outside the scope of the news article, AskUs will respond with "I apologize, but I am unable to provide a response at this time as I do not possess the necessary information. Please ask a question related to this news article. Is there anything else I can assist you with?". If the user acknowledges the answer or writes any form of 'okay' slang, AskUs will respond with 👍. Do not generate questions and answers on your own. This is the context of the article: ${context}` },
         {
           role: 'user', content: `Question: ${question}`
         },
@@ -73,36 +73,6 @@ class GptService {
         messages: messages,
         temperature: 0,
         max_tokens: 1000,
-        top_p: 1,
-        frequency_penalty: 0,
-        presence_penalty: 0
-      })
-      return response.data
-    } catch (error) {
-      console.error(error)
-    }
-  }
-
-  async assignCategoryFromChatGPT (context, updatedCategories) {
-    try {
-      console.log('Getting Categories from ChatGPT')
-      const messages = [
-        {
-          role: 'system',
-          content: `Categorise the following news article based on the given categories below. Each article may have multiple categories assigned to it, but make sure all the assigned categories must be selected from the given below categories only and no new category that is not a part of the below list will be assigned to the article. Give only the category names in a single line and remove any type of number before it.
-          These are the news categories:
-          ${updatedCategories}`
-        },
-        {
-          role: 'user',
-          content: `${context}`
-        }
-      ]
-      const response = await openai.createChatCompletion({
-        model: 'gpt-3.5-turbo',
-        messages: messages,
-        temperature: 0,
-        max_tokens: 100,
         top_p: 1,
         frequency_penalty: 0,
         presence_penalty: 0
