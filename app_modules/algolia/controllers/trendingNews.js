@@ -51,5 +51,5 @@ const algoliaTrendingNews = async (req, res) => {
   }
 }
 
-router.post('/algoliaTrendingNews', cache.route(100), validation, algoliaTrendingNews)
+router.post('/algoliaTrendingNews', cache.route(600), validation, algoliaTrendingNews)
 module.exports = router

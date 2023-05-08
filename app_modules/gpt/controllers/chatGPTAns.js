@@ -50,5 +50,5 @@ const chatGPTAns = async (req, res) => {
   }
 }
 
-router.post('/chatGPTAns', cache.route(10), validation, chatGPTAns)
+router.post('/chatGPTAns', cache.route(600), validation, chatGPTAns)
 module.exports = router
