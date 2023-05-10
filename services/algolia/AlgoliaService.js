@@ -6,7 +6,7 @@ const recommendClient = algoliarecommend(process.env.ALGOLIA_APP_ID, process.env
 )
 
 class AlgoliaService {
-  async searchQueryAlgolia (searchData, pageNo, language, id, blockedSources) {
+  async searchQueryAlgolia (searchData, pageNo, language, id, blockedSources, categories) {
     let newIndex
     if (language === undefined || language === 'English') {
       newIndex = client.initIndex('news')
@@ -19,7 +19,9 @@ class AlgoliaService {
       for (const item of blockedSources) {
         optionalFilters.push(`source : -${item}`)
       }
-      console.log(optionalFilters)
+      for (const item of categories) {
+        optionalFilters.push(`category : ${item}`)
+      }
       news = await newIndex.search(searchData, {
         enablePersonalization: true,
         userToken: id,
