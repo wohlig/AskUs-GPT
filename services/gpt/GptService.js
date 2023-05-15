@@ -41,7 +41,7 @@ class GptService {
           {
             role: 'system',
             content:
-              'You are a helpful assistant. First give the summary, label it as "Summary:", then the headline, label it as "Headline:" then the tweet, label it as "Tweet:", then the tags, label it as "Tags:", then the bullet points, label it as "Bullets:" and finally the categories, label it as "Categories:".'
+              'You are a helpful assistant. First give the summary, label it as "Summary:", then the headline, label it as "Headline:" then the tweet, label it as "Tweet:", then the tags, label it as "Tags:", then the bullet points, label it as "Bullets:", then the categories, label it as "Categories:" and finally the Sentiment, label it as "Sentiment:".'
           },
           {
             role: 'user',
@@ -53,7 +53,8 @@ class GptService {
           5. Give the same summary created above in bullet points.
           6. Categorise the above news article based on the given categories below. Each article may have multiple categories assigned to it, but make sure all the assigned categories must be selected from the given below categories only and no new category that is not a part of the below list will be assigned to the article. Give only the category names in a single line and remove any type of number before it.
           These are the news categories:
-          ${updatedCategories}`
+          ${updatedCategories}
+          7. Analyse the above news article and return the sentiment of that article. The sentiments you possess are [Positive, Negative, Neutral]. Give the answer in 1 word only.`
           }
         ]
       } else {
@@ -61,7 +62,7 @@ class GptService {
           {
             role: 'system',
             content:
-              'You are a helpful assistant. First give the summary, label it as "Summary:", then the headline, label it as "Headline:", then the tags, label it as "Tags:" and finally the categories, label it as "Categories:".'
+              'You are a helpful assistant. First give the summary, label it as "Summary:", then the headline, label it as "Headline:", then the tags, label it as "Tags:", then the categories, label it as "Categories:" and finally the sentiment, label it as "Sentiment:".'
           },
           {
             role: 'user',
@@ -71,7 +72,8 @@ class GptService {
           3. Create tags for the above article strictly in ${language} language.
           4. Categorise the above news article based on the given categories below. Each article may have multiple categories assigned to it, but make sure all the assigned categories must be selected from the given below categories only and no new category that is not a part of the below list will be assigned to the article. Give only the category names in a single line and remove any type of number before it. Also be very precise while categorising the article.
           These are the news categories:
-          ${updatedCategories}`
+          ${updatedCategories}
+          5. Analyse the above news article and return the sentiment of that article. The sentiments you possess are [Positive, Negative, Neutral]. Give the answer in 1 word only.`
           }
         ]
       }
