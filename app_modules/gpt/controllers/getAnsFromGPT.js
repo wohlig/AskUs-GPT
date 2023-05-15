@@ -50,5 +50,5 @@ const getAnsFromGPT = async (req, res) => {
   }
 }
 
-router.post('/getAnsFromGPT', cache.route(10), validation, getAnsFromGPT)
+router.post('/getAnsFromGPT', cache.route(600), validation, getAnsFromGPT)
 module.exports = router

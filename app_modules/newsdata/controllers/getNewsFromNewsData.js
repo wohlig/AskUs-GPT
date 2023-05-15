@@ -61,5 +61,5 @@ const getNewsData = async (req, res) => {
   }
 }
 
-router.post('/getNewsData', cache.route(10), validation, getNewsData)
+router.post('/getNewsData', cache.route(60), validation, getNewsData)
 module.exports = router
