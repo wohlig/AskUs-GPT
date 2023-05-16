@@ -2,7 +2,7 @@ const express = require('express')
 const router = express.Router()
 const __constants = require('../../../config/constants')
 const validationOfAPI = require('../../../middlewares/validation')
-const cache = require('../../../middlewares/requestCacheMiddleware')
+// const cache = require('../../../middlewares/requestCacheMiddleware')
 const AlgoliaService = require('../../../services/algolia/AlgoliaService')
 
 /**
@@ -46,7 +46,7 @@ const validation = (req, res, next) => {
 }
 const algoliaSearchQuery = async (req, res) => {
   try {
-    const result = await AlgoliaService.searchQueryAlgolia(req.body.searchData, req.body.page, req.body.language, req.body.userId, req.body.blockedSources)
+    const result = await AlgoliaService.searchQueryAlgolia(req.body.searchData, req.body.page, req.body.language, req.body.userId, req.body.blockedSources, req.body.categories)
     res.sendJson({ type: __constants.RESPONSE_MESSAGES.SUCCESS, data: result })
   } catch (err) {
     console.log('algoliaSearchQuery Error', err)
@@ -57,5 +57,5 @@ const algoliaSearchQuery = async (req, res) => {
   }
 }
 
-router.post('/algoliaSearchQuery', cache.route(600), validation, algoliaSearchQuery)
+router.post('/algoliaSearchQuery', validation, algoliaSearchQuery)
 module.exports = router
