@@ -19,15 +19,18 @@ class AlgoliaService {
       for (const item of blockedSources) {
         optionalFilters.push(`source : -${item}`)
       }
+      var filters = ''
       for (const item of categories) {
-        optionalFilters.push(`category : ${item}`)
+        filters = filters.concat(`categories : ${item} OR `)
       }
+      filters = filters.slice(0, -4)
       news = await newIndex.search(searchData, {
         enablePersonalization: true,
         userToken: id,
         clickAnalytics: true,
         page: pageNo - 1,
-        optionalFilters: optionalFilters
+        optionalFilters: optionalFilters,
+        filters: filters
       })
     } else {
       news = await newIndex.search(searchData, {
