@@ -54,7 +54,7 @@ class GptService {
           6. Categorise the above news article based on the given categories below. Each article may have multiple categories assigned to it, but make sure all the assigned categories must be selected from the given below categories only and no new category that is not a part of the below list will be assigned to the article. Give only the category names in a single line and remove any type of number before it.
           These are the news categories:
           ${updatedCategories}
-          7. Analyse the above news article and return the sentiment of that article. The sentiments you possess are [Positive, Negative, Neutral]. Give the answer in 1 word only.`
+          7. Analyse the above news article and return the sentiment of that article. The sentiments you possess are [Positive, Negative, Neutral]. Give the answer in 1 word and in english only.`
           }
         ]
       } else {
@@ -73,7 +73,7 @@ class GptService {
           4. Categorise the above news article based on the given categories below. Each article may have multiple categories assigned to it, but make sure all the assigned categories must be selected from the given below categories only and no new category that is not a part of the below list will be assigned to the article. Give only the category names in a single line and remove any type of number before it. Also be very precise while categorising the article.
           These are the news categories:
           ${updatedCategories}
-          5. Analyse the above news article and return the sentiment of that article. The sentiments you possess are [Positive, Negative, Neutral]. Give the answer in 1 word only.`
+          5. Analyse the above news article and return the sentiment of that article. The sentiments you possess are [Positive, Negative, Neutral]. Give the answer in 1 word and in english only.`
           }
         ]
       }
