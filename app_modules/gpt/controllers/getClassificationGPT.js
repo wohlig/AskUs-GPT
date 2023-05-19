@@ -12,9 +12,9 @@ const GptService = require('../../../services/gpt/GptService')
 
 /**
  * @memberof -GPT-module-
- * @name getContentFromGPT
- * @path {POST} /api/gpt/getContentFromGPT
- * @description Bussiness Logic :- In getContentFromGPT API, we get summary, headline, tweet and tags of the context from gpt
+ * @name getClassificationGPT
+ * @path {POST} /api/gpt/getClassificationGPT
+ * @description Bussiness Logic :- In getClassificationGPT API, we get summary, headline, tweet and tags of the context from gpt
  * @response {string} ContentType=application/json - Response content type.
  * @response {string} metadata.msg=Success  - Response got successfully.
  * @response {string} metadata.data - It will return the data.
@@ -27,7 +27,11 @@ const validationSchema = {
   type: 'object',
   required: true,
   properties: {
-    context: {
+    summary: {
+      type: 'string',
+      required: true
+    },
+    headline: {
       type: 'string',
       required: true
     }
@@ -36,16 +40,16 @@ const validationSchema = {
 const validation = (req, res, next) => {
   return validationOfAPI(req, res, next, validationSchema, 'body')
 }
-const getNewsFromGPT = async (req, res) => {
+const getClassificationGPT = async (req, res) => {
   try {
-    const result = await GptService.getContentFromGPT(req.body.context, req.body.lang)
+    const result = await GptService.getClassificationGPT(req.body.summary, req.body.headline, req.body.categories)
 
     res.sendJson({
       type: __constants.RESPONSE_MESSAGES.SUCCESS,
       data: { gpt: result }
     })
   } catch (err) {
-    console.log('getContentFromGPT Error', err)
+    console.log('getClassificationGPT Error', err)
     return res.sendJson({
       type: err.type || __constants.RESPONSE_MESSAGES.SERVER_ERROR,
       err: err.err || err
@@ -53,5 +57,5 @@ const getNewsFromGPT = async (req, res) => {
   }
 }
 
-router.post('/getNewsFromGPT', cache.route(600), validation, getNewsFromGPT)
+router.post('/getClassificationGPT', cache(600), validation, getClassificationGPT)
 module.exports = router
