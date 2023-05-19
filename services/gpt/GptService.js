@@ -83,6 +83,7 @@ class GptService {
       console.error(error)
     }
   }
+
   async getClassificationGPT (summary, headline, updatedCategories) {
     console.log('Sending Summary & Headline to GPT')
     try {
@@ -115,6 +116,7 @@ class GptService {
       console.error(error)
     }
   }
+
   async chatGPTAns (context, question) {
     console.log('Sending Question to GPT')
     const response = await openai.createChatCompletion({

@@ -32,8 +32,8 @@ const validationSchema = {
       required: true
     },
     headline: {
-        type: 'string',
-        required: true
+      type: 'string',
+      required: true
     }
   }
 }
@@ -57,5 +57,5 @@ const getClassificationGPT = async (req, res) => {
   }
 }
 
-router.post('/getClassificationGPT', validation, getClassificationGPT)
+router.post('/getClassificationGPT', cache(600), validation, getClassificationGPT)
 module.exports = router
