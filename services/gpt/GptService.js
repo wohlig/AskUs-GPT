@@ -32,7 +32,7 @@ class GptService {
     return response.data
   }
 
-  async getContentFromGPT (context, language, updatedCategories) {
+  async getContentFromGPT (context, language) {
     console.log('Sending News to GPT', language)
     try {
       let messages
@@ -50,11 +50,7 @@ class GptService {
           2. Create a headline for the summary.
           3. Create a tweet for the news article.
           4. Create tags for the above article.
-          5. Give the same summary created above in bullet points.
-          6. Categorise the above news article based on the given categories below. Each article may have multiple categories assigned to it, but make sure all the assigned categories must be selected from the given below categories only and no new category that is not a part of the below list will be assigned to the article. Give only the category names in a single line and remove any type of number before it.
-          These are the news categories:
-          ${updatedCategories}
-          7. Analyse the above news article and return the sentiment of that article. The sentiments you possess are [Positive, Negative, Neutral]. Give the answer in 1 word only.`
+          5. Give the same summary created above in bullet points.`
           }
         ]
       } else {
@@ -69,11 +65,7 @@ class GptService {
             content: `${context}
           1. Create a summary of the news article given on the link provided above strictly in ${language} language in the range of 60-80 words.
           2. Create a headline for the summary strictly in ${language} language.
-          3. Create tags for the above article strictly in ${language} language.
-          4. Categorise the above news article based on the given categories below. Each article may have multiple categories assigned to it, but make sure all the assigned categories must be selected from the given below categories only and no new category that is not a part of the below list will be assigned to the article. Give only the category names in a single line and remove any type of number before it. Also be very precise while categorising the article.
-          These are the news categories:
-          ${updatedCategories}
-          5. Analyse the above news article and return the sentiment of that article. The sentiments you possess are [Positive, Negative, Neutral]. Give the answer in 1 word only.`
+          3. Create tags for the above article strictly in ${language} language.`
           }
         ]
       }
@@ -91,7 +83,38 @@ class GptService {
       console.error(error)
     }
   }
-
+  async getClassificationGPT (summary, headline, updatedCategories) {
+    console.log('Sending Summary & Headline to GPT')
+    try {
+      const messages = [
+        {
+          role: 'system',
+          content:
+            'You are a helpful assistant. First give the categories, label it as "Categories:" and finally the Sentiment, label it as "Sentiment:".'
+        },
+        {
+          role: 'user',
+          content: `Summary: ${summary}
+          Headline: ${headline}
+        1. Analyze the provided summary and headline and categorize it using the following predefined categories. Each article may have multiple assigned categories, but ensure that all assigned categories are selected from the list below. Do not include any new categories that are not part of the provided list. The category 'nation' provided below pertains to news about India. The category 'advertisement' provided below pertains to any news that promotes the sale, discounts, features, price of any product be it a car, or a technology device, etc. Also, news related to games will come under 'advertisement' category. Provide only the category names in lowercase format and in a single line, removing any preceding numbers.
+        ${updatedCategories}
+        2. Analyse the above summary and headline and return the sentiment of that article. The sentiments you possess are [Positive, Negative, Neutral]. Give the answer in 1 word only.`
+        }
+      ]
+      const response = await openai.createChatCompletion({
+        model: 'gpt-3.5-turbo',
+        messages: messages,
+        temperature: 0,
+        max_tokens: 1000,
+        top_p: 1,
+        frequency_penalty: 0,
+        presence_penalty: 0
+      })
+      return response.data
+    } catch (error) {
+      console.error(error)
+    }
+  }
   async chatGPTAns (context, question) {
     console.log('Sending Question to GPT')
     const response = await openai.createChatCompletion({
