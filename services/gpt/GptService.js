@@ -41,7 +41,7 @@ class GptService {
           {
             role: 'system',
             content:
-              'You are a helpful assistant. First give the summary, label it as "Summary:", then the headline, label it as "Headline:" then the tweet, label it as "Tweet:", then the tags, label it as "Tags:", then the bullet points, label it as "Bullets:", then the categories, label it as "Categories:" and finally the Sentiment, label it as "Sentiment:".'
+              'You are a helpful assistant. First give the summary, label it as "Summary:", then the headline, label it as "Headline:" then the tweet, label it as "Tweet:", then the tags, label it as "Tags:", and finally the bullet points, label it as "Bullets:".'
           },
           {
             role: 'user',
@@ -58,7 +58,7 @@ class GptService {
           {
             role: 'system',
             content:
-              'You are a helpful assistant. First give the summary, label it as "Summary:", then the headline, label it as "Headline:", then the tags, label it as "Tags:", then the categories, label it as "Categories:" and finally the sentiment, label it as "Sentiment:".'
+              'You are a helpful assistant. First give the summary, label it as "Summary:", then the headline, label it as "Headline:" and finally the tags, label it as "Tags:".'
           },
           {
             role: 'user',
