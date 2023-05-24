@@ -19,6 +19,7 @@ class AlgoliaService {
       for (const item of blockedSources) {
         optionalFilters.push(`source : -${item}`)
       }
+      optionalFilters.push('status : -unpublished')
       var filters = ''
       for (const item of categories) {
         filters = filters.concat(`categories : ${item} OR `)
