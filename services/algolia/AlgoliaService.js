@@ -24,8 +24,13 @@ class AlgoliaService {
       for (const item of categories) {
         filters = filters.concat(`categories : ${item} OR `)
       }
-      filters = filters.slice(0, -4)
-      filters.concat(') AND (NOT status : unpublished)')
+      if (filters !=='(') {
+        filters = filters.slice(0, -4)
+        filters = filters.concat(') AND (NOT status : unpublished)')
+      } else {
+        filters = filters.concat('NOT status : unpublished)')
+      }
+      console.log(filters)
       news = await newIndex.search(searchData, {
         enablePersonalization: true,
         userToken: id,
