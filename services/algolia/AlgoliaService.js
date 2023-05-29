@@ -24,7 +24,7 @@ class AlgoliaService {
       for (const item of categories) {
         filters = filters.concat(`categories : ${item} OR `)
       }
-      if (filters !=='(') {
+      if (filters !== '(') {
         filters = filters.slice(0, -4)
         filters = filters.concat(') AND (NOT status : unpublished)')
       } else {
