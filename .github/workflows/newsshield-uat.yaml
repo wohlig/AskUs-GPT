@@ -10,7 +10,7 @@ env:
     GITHUB_TOKEN: ${{ secrets.AWS_GITHUB_TOKEN }}
 
 jobs:
-    askus-dev:
+  newsshield-uat:
         runs-on: ubuntu-latest
         steps:
             - name: Configure AWS credentials
