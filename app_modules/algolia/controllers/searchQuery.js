@@ -57,5 +57,5 @@ const algoliaSearchQuery = async (req, res) => {
   }
 }
 
-router.post('/algoliaSearchQuery', cache.route(60), validation, algoliaSearchQuery)
+router.post('/algoliaSearchQuery', validation, algoliaSearchQuery)
 module.exports = router
