@@ -78,6 +78,7 @@ class GptService {
         frequency_penalty: 0,
         presence_penalty: 0
       })
+      console.log(response.data)
       return response.data
     } catch (error) {
       console.error(error)
