@@ -1,6 +1,6 @@
 const axios = require('axios')
 class GnewsService {
-  async getNewsFromGNews (categoryName, from, to, lang, country) {
+  async getNewsFromGNews (categoryName, from, to, lang) {
     console.log({
       categoryName: categoryName,
       from: from,
@@ -10,7 +10,7 @@ class GnewsService {
     console.log('Fetching News From API')
     try {
       const news = await axios.get(
-        `https://gnews.io/api/v4/top-headlines?category=${categoryName}&token=${process.env.TOKEN}&expand=content&lang=${lang}&country=${country}&to=${to}&from=${from}&max=50`
+        `https://gnews.io/api/v4/top-headlines?category=${categoryName}&token=${process.env.TOKEN}&expand=content&lang=${lang}&country=in&to=${to}&from=${from}&max=50`
       )
       console.log('New News', news.data)
       return news.data
