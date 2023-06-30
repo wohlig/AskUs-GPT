@@ -50,7 +50,7 @@ const validation = (req, res, next) => {
 }
 const getGNews = async (req, res) => {
   try {
-    const result = await GnewsService.getNewsFromGNews(req.body.categoryName, req.body.from, req.body.to, req.body.lang)
+    const result = await GnewsService.getNewsFromGNews(req.body.categoryName, req.body.from, req.body.to, req.body.lang, req.body.country)
     res.sendJson({ type: __constants.RESPONSE_MESSAGES.SUCCESS, data: { news: result } })
   } catch (err) {
     console.log('getGNews Error', err)
