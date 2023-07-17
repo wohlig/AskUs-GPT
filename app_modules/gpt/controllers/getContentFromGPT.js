@@ -2,7 +2,7 @@ const express = require('express')
 const router = express.Router()
 const __constants = require('../../../config/constants')
 const validationOfAPI = require('../../../middlewares/validation')
-const cache = require('../../../middlewares/requestCacheMiddleware')
+// const cache = require('../../../middlewares/requestCacheMiddleware')
 const GptService = require('../../../services/gpt/GptService')
 
 /**
@@ -37,6 +37,7 @@ const validation = (req, res, next) => {
   return validationOfAPI(req, res, next, validationSchema, 'body')
 }
 const getNewsFromGPT = async (req, res) => {
+  console.log('req.body', req.body)
   try {
     const result = await GptService.getContentFromGPT(req.body.context, req.body.lang)
 
@@ -53,5 +54,5 @@ const getNewsFromGPT = async (req, res) => {
   }
 }
 
-router.post('/getNewsFromGPT', cache.route(600), validation, getNewsFromGPT)
+router.post('/getNewsFromGPT', validation, getNewsFromGPT)
 module.exports = router

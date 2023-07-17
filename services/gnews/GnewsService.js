@@ -8,11 +8,18 @@ class GnewsService {
       lang: lang
     })
     console.log('Fetching News From API')
-    const news = await axios.get(
+    try {
+      const news = await axios.get(
         `https://gnews.io/api/v4/top-headlines?category=${categoryName}&token=${process.env.TOKEN}&expand=content&lang=${lang}&country=in&to=${to}&from=${from}&max=50`
-    )
-    console.log('New News', news.data)
-    return news.data
+      )
+      console.log('New News', news.data)
+      return news.data
+    } catch (error) {
+      await axios.post(
+        `https://api.telegram.org/bot${process.env.TELEGRAM_TOKEN}/sendMessage?chat_id=@newsShieldLogs&text=Title:%20GNEWS%20Error\n\nMessage:%20${error.message}`
+      )
+      throw new Error(error.message)
+    }
   }
 }
 
