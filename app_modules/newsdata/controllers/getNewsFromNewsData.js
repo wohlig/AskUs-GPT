@@ -2,7 +2,7 @@ const express = require('express')
 const router = express.Router()
 const __constants = require('../../../config/constants')
 const validationOfAPI = require('../../../middlewares/validation')
-const cache = require('../../../middlewares/requestCacheMiddleware')
+// const cache = require('../../../middlewares/requestCacheMiddleware')
 const NewsDataService = require('../../../services/newsdata/NewsDataService')
 
 /**
@@ -61,5 +61,5 @@ const getNewsData = async (req, res) => {
   }
 }
 
-router.post('/getNewsData', cache.route(60), validation, getNewsData)
+router.post('/getNewsData', validation, getNewsData)
 module.exports = router

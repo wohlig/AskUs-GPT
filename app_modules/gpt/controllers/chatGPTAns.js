@@ -2,7 +2,7 @@ const express = require('express')
 const router = express.Router()
 const __constants = require('../../../config/constants')
 const validationOfAPI = require('../../../middlewares/validation')
-const cache = require('../../../middlewares/requestCacheMiddleware')
+// const cache = require('../../../middlewares/requestCacheMiddleware')
 const gptServices = require('../../../services/gpt/GptService')
 
 /**
@@ -50,5 +50,5 @@ const chatGPTAns = async (req, res) => {
   }
 }
 
-router.post('/chatGPTAns', cache.route(600), validation, chatGPTAns)
+router.post('/chatGPTAns',validation, chatGPTAns)
 module.exports = router

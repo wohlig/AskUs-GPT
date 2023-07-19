@@ -2,7 +2,7 @@ const express = require('express')
 const router = express.Router()
 const __constants = require('../../../config/constants')
 const validationOfAPI = require('../../../middlewares/validation')
-const cache = require('../../../middlewares/requestCacheMiddleware')
+// const cache = require('../../../middlewares/requestCacheMiddleware')
 const NewsAPiService = require('../../../services/newsapi/NewsApiService')
 
 /**
@@ -53,5 +53,5 @@ const getNewsAPi = async (req, res) => {
   }
 }
 
-router.post('/getNewsAPi', cache.route(60), validation, getNewsAPi)
+router.post('/getNewsAPi', validation, getNewsAPi)
 module.exports = router

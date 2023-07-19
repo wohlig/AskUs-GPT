@@ -2,7 +2,7 @@ const express = require('express')
 const router = express.Router()
 const __constants = require('../../../config/constants')
 const validationOfAPI = require('../../../middlewares/validation')
-const cache = require('../../../middlewares/requestCacheMiddleware')
+// const cache = require('../../../middlewares/requestCacheMiddleware')
 const AlgoliaService = require('../../../services/algolia/AlgoliaService')
 
 /**
@@ -51,5 +51,5 @@ const algoliaTrendingNews = async (req, res) => {
   }
 }
 
-router.post('/algoliaTrendingNews', cache.route(600), validation, algoliaTrendingNews)
+router.post('/algoliaTrendingNews', validation, algoliaTrendingNews)
 module.exports = router
