@@ -3,6 +3,7 @@ const configuration = new Configuration({
   apiKey: process.env.OPENAI_API_KEY
 })
 const openai = new OpenAIApi(configuration)
+const axios = require('axios')
 
 class GptService {
   async getAnsFromGPT (context, question) {
@@ -144,6 +145,62 @@ class GptService {
       presence_penalty: 0
     })
     return response.data
+  }
+
+  async createNewsFromGPT (context) {
+    console.log('Generating News from GPT')
+    const match_content = await axios.get(
+      `${process.env.SPORTS_RADAR_URL}cricket-t2/en/matches/${context.match_id}/summary${process.env.SPORTS_RADAR_DEFAULT_FORMAT}?api_key=${process.env.SPORTS_RADAR_API_KEY}`
+    )
+
+    const updated_match_content = await this.removeFields(match_content)
+    console.log(JSON.stringify(updated_match_content.data))
+
+    try {
+      const messages = [
+        {
+          role: 'system',
+          content:
+            'You are a helpful assistant. First prepare the summary from the data, label it as "Summary:", then the headline, label it as "Headline:" and finally the tags, label it as "Tags:".'
+        },
+        {
+          role: 'user',
+          content: `${JSON.stringify(updated_match_content.data)}
+            1. Create a summary of the above created article in the range of 60-80 words.
+            2. Create a headline for the summary.
+            3. Create tags for the above article.
+            4. Give the same summary created above in bullet points.`
+        }
+      ]
+      const response = await openai.createChatCompletion({
+        model: 'gpt-3.5-turbo',
+        messages: messages,
+        temperature: 0,
+        max_tokens: 2048,
+        top_p: 1,
+        frequency_penalty: 0,
+        presence_penalty: 0
+      })
+      return response.data
+    } catch (error) {
+      console.error(error.message)
+    }
+  }
+
+  async removeFields (match_content) {
+    delete match_content.data.generated_at
+    delete match_content.data.schema
+    for (const i in match_content.data.statistics.innings) {
+      delete match_content.data.statistics.innings[i].overs
+      delete match_content.data.statistics.innings[i].teams[0].statistics
+        .batting.partnerships
+      delete match_content.data.statistics.innings[i].teams[0].statistics
+        .batting.players
+      delete match_content.data.statistics.innings[i].teams[1].statistics
+        .bowling.players
+    }
+
+    return match_content
   }
 }
 
