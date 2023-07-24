@@ -50,7 +50,7 @@ jobs:
         git config user.name "$GITHUB_ACTOR"
         git config user.email "$GITHUB_ACTOR@wohlig.com"
 
-        yq e '.spec.template.spec.containers[0].image = "444083742860.dkr.ecr.eu-central-1.amazonaws.com/askus-gpt:${{ env.GITHUB_BRANCH }}"' -i deployment.apps/newsshield-gpt.yaml
+        yq e '.spec.template.spec.containers[0].image = "asia-south1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/sachai-non-prod-infra/${{ secrets.GCP_IMAGE_NAME }}:${{ env.GITHUB_BRANCH }}"' -i deployment.apps/newsshield-gpt.yaml
   
         git add .
         git commit -m "updating newer image"  
