@@ -37,7 +37,6 @@ const validation = (req, res, next) => {
   return validationOfAPI(req, res, next, validationSchema, 'body')
 }
 const getNewsFromGPT = async (req, res) => {
-  console.log('req.body', req.body)
   try {
     const result = await GptService.getContentFromGPT(req.body.context, req.body.lang)
 
