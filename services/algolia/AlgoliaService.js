@@ -30,7 +30,6 @@ class AlgoliaService {
       } else {
         filters = filters.concat('NOT status : unpublished)')
       }
-      console.log(filters)
       news = await newIndex.search(searchData, {
         enablePersonalization: true,
         userToken: id,
