@@ -14,7 +14,7 @@ class GnewsService {
       )
       return news.data
     } catch (error) {
-      console.log("GNEWS Error", error, ">>>>", error.message)
+      console.log('GNEWS Error', error, '>>>>', error.message)
       await axios.post(
         `https://api.telegram.org/bot${process.env.TELEGRAM_TOKEN}/sendMessage?chat_id=@newsShieldLogs&text=Title:%20GNEWS%20Error\n\nMessage:%20${error.message}`
       )
