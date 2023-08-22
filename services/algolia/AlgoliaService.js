@@ -19,7 +19,7 @@ class AlgoliaService {
       for (const item of blockedSources) {
         optionalFilters.push(`source : -${item}`)
       }
-      if(isVideo){
+      if (isVideo) {
         optionalFilters.push('isVideo : true')
       }
       // optionalFilters.push('status : -unpublished')
