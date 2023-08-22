@@ -63,14 +63,14 @@ class GptService {
           {
             role: 'user',
             content: `${context}
-          1. Create a summary of the above article strictly in ${language} language in the range of 60-80 words.
+          1. Create a summary of the above article strictly in ${language} language in the range of 100-120 words.
           2. Create a headline for the summary strictly in ${language} language.
           3. Create tags for the above article strictly in ${language} language.`
           }
         ]
       }
       const response = await openai.createChatCompletion({
-        model: 'gpt-3.5-turbo',
+        model: 'gpt-4',
         messages: messages,
         temperature: 0,
         max_tokens: 1000,

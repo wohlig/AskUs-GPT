@@ -6,7 +6,7 @@ const recommendClient = algoliarecommend(process.env.ALGOLIA_APP_ID, process.env
 )
 
 class AlgoliaService {
-  async searchQueryAlgolia (searchData, pageNo, language, id, blockedSources, categories) {
+  async searchQueryAlgolia (searchData, pageNo, language, id, blockedSources, categories, isVideo) {
     let newIndex
     if (language === undefined || language === 'English') {
       newIndex = client.initIndex('news')
@@ -18,6 +18,9 @@ class AlgoliaService {
       const optionalFilters = []
       for (const item of blockedSources) {
         optionalFilters.push(`source : -${item}`)
+      }
+      if(isVideo){
+        optionalFilters.push('isVideo : true')
       }
       // optionalFilters.push('status : -unpublished')
       var filters = '('
