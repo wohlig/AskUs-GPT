@@ -171,11 +171,10 @@ class GptService {
         presence_penalty: 0
       })
       return response.data
-    }
-    catch (error) {
+    } catch (error) {
       console.error(error)
     }
   }
-}  
+}
 
 module.exports = new GptService()
