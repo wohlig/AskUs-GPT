@@ -145,6 +145,37 @@ class GptService {
     })
     return response.data
   }
-}
+
+  async getFullContentGPT (transcript) {
+    console.log('Generating full content from GPT')
+    try {
+      const messages = [
+        {
+          role: 'system',
+          content:
+            'You are a helpful assistant. Give the Full Content and label it as "Full Content:".'
+        },
+        {
+          role: 'user',
+          content: `${transcript}
+          Generate a news article for the above content`
+        }
+      ]
+      const response = await openai.createChatCompletion({
+        model: 'gpt-3.5-turbo',
+        messages: messages,
+        temperature: 0,
+        max_tokens: 1000,
+        top_p: 1,
+        frequency_penalty: 0,
+        presence_penalty: 0
+      })
+      return response.data
+    }
+    catch (error) {
+      console.error(error)
+    }
+  }
+}  
 
 module.exports = new GptService()
