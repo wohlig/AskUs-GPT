@@ -43,8 +43,7 @@ const createNewsFromGPT = async (req, res) => {
 
     res.sendJson({
       type: __constants.RESPONSE_MESSAGES.SUCCESS,
-      data: { gpt: result },
-      fullContent: fullContent
+      data: { gpt: result, fullContent: fullContent }
     })
   } catch (err) {
     console.log('createNewsFromGPT Error', err)
