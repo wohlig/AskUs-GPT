@@ -1,177 +1,177 @@
-const { Configuration, OpenAIApi } = require("openai");
+const { Configuration, OpenAIApi } = require('openai')
 const configuration = new Configuration({
-  apiKey: process.env.OPENAI_API_KEY,
-});
-const openai = new OpenAIApi(configuration);
-const axios = require("axios");
+  apiKey: process.env.OPENAI_API_KEY
+})
+const openai = new OpenAIApi(configuration)
+const axios = require('axios')
 
 class GptService {
-  async getAnsFromGPT(context, question) {
-    console.log("Sending Question to GPT");
+  async getAnsFromGPT (context, question) {
+    console.log('Sending Question to GPT')
     const response = await openai.createChatCompletion({
-      model: "gpt-3.5-turbo",
+      model: 'gpt-3.5-turbo',
       messages: [
         {
-          role: "system",
-          content: `Your name is AskUs and you are a helpful chatbot. AskUs answers any question within the scope of the below news article. If the question is outside the scope of the news article, AskUs will respond with "I apologize, but I am unable to provide a response at this time as I do not possess the necessary information. Please ask a question related to this news article. Is there anything else I can assist you with?". If the user acknowledges the answer or writes any form of 'okay' slang, AskUs will respond with 👍. Do not generate questions and answers on your own. This is the context of the article: ${context}`,
+          role: 'system',
+          content: `Your name is AskUs and you are a helpful chatbot. AskUs answers any question within the scope of the below news article. If the question is outside the scope of the news article, AskUs will respond with "I apologize, but I am unable to provide a response at this time as I do not possess the necessary information. Please ask a question related to this news article. Is there anything else I can assist you with?". If the user acknowledges the answer or writes any form of 'okay' slang, AskUs will respond with 👍. Do not generate questions and answers on your own. This is the context of the article: ${context}`
         },
         {
-          role: "user",
-          content: `Question: ${question}`,
+          role: 'user',
+          content: `Question: ${question}`
         },
         {
-          role: "assistant",
-          content: "Answer: ",
-        },
+          role: 'assistant',
+          content: 'Answer: '
+        }
       ],
       temperature: 0,
       max_tokens: 256,
       top_p: 1,
       frequency_penalty: 0,
-      presence_penalty: 0,
-    });
-    return response.data;
+      presence_penalty: 0
+    })
+    return response.data
   }
 
-  async getContentFromGPT(context, language, max_tokens = 1000) {
-    console.log("Sending News to GPT", language);
+  async getContentFromGPT (context, language, max_tokens = 1000) {
+    console.log('Sending News to GPT', language)
     try {
-      let messages;
-      if (language === "English") {
+      let messages
+      if (language === 'English') {
         messages = [
           {
-            role: "system",
+            role: 'system',
             content:
-              'You are a helpful assistant. First give the summary, label it as "Summary:", then the headline, label it as "Headline:" then the tweet, label it as "Tweet:", then the tags, label it as "Tags:", and finally the bullet points, label it as "Bullets:".',
+              'You are a helpful assistant. First give the summary, label it as "Summary:", then the headline, label it as "Headline:" then the tweet, label it as "Tweet:", then the tags, label it as "Tags:", and finally the bullet points, label it as "Bullets:".'
           },
           {
-            role: "user",
+            role: 'user',
             content: `${context}
           1. Create a summary of the above article in the range of 60-80 words.
           2. Create a headline for the summary.
           3. Create a tweet for the news article.
           4. Create tags for the above article.
-          5. Give the same summary created above in bullet points.`,
-          },
-        ];
+          5. Give the same summary created above in bullet points.`
+          }
+        ]
       } else {
         messages = [
           {
-            role: "system",
+            role: 'system',
             content:
-              'You are a helpful assistant. First give the summary, label it as "Summary:", then the headline, label it as "Headline:" and finally the tags, label it as "Tags:".',
+              'You are a helpful assistant. First give the summary, label it as "Summary:", then the headline, label it as "Headline:" and finally the tags, label it as "Tags:".'
           },
           {
-            role: "user",
+            role: 'user',
             content: `${context}
           1. Create a summary of the above article strictly in ${language} language in the range of 100-120 words.
           2. Create a headline for the summary strictly in ${language} language.
-          3. Create tags for the above article strictly in ${language} language.`,
-          },
-        ];
+          3. Create tags for the above article strictly in ${language} language.`
+          }
+        ]
       }
       const response = await openai.createChatCompletion({
-        model: "gpt-4",
+        model: 'gpt-4',
         messages: messages,
         temperature: 0,
         max_tokens: max_tokens,
         top_p: 1,
         frequency_penalty: 0,
-        presence_penalty: 0,
-      });
-      console.log(response.data);
-      return response.data;
+        presence_penalty: 0
+      })
+      console.log(response.data)
+      return response.data
     } catch (error) {
-      console.error(error);
+      console.error(error)
     }
   }
 
-  async getClassificationGPT(summary, headline, updatedCategories) {
-    console.log("Sending Summary & Headline to GPT");
+  async getClassificationGPT (summary, headline, updatedCategories) {
+    console.log('Sending Summary & Headline to GPT')
     try {
       const messages = [
         {
-          role: "system",
+          role: 'system',
           content:
-            'You are a helpful assistant. First give the categories, label it as "Categories:" and finally the Sentiment, label it as "Sentiment:".',
+            'You are a helpful assistant. First give the categories, label it as "Categories:" and finally the Sentiment, label it as "Sentiment:".'
         },
         {
-          role: "user",
+          role: 'user',
           content: `Summary: ${summary}
           Headline: ${headline}
         1. Analyze the provided summary and headline and categorize it using the following predefined categories. Each article may have multiple assigned categories, but ensure that all assigned categories are selected from the list below. Do not include any new categories that are not part of the provided list. The category 'nation' provided below pertains to news about India. The category 'advertisement' provided below pertains to any news that promotes the sale, discounts, features, price of any product be it a car, or a technology device, etc. Also, news related to games will come under 'advertisement' category. Provide only the category names in lowercase format and in a single line, removing any preceding numbers.
         ${updatedCategories}
-        2. Analyse the above summary and headline and return the sentiment of that article. The sentiments you possess are [Positive, Negative, Neutral]. Give the answer in 1 word only.`,
-        },
-      ];
+        2. Analyse the above summary and headline and return the sentiment of that article. The sentiments you possess are [Positive, Negative, Neutral]. Give the answer in 1 word only.`
+        }
+      ]
       const response = await openai.createChatCompletion({
-        model: "gpt-3.5-turbo",
+        model: 'gpt-3.5-turbo',
         messages: messages,
         temperature: 0,
         max_tokens: 1000,
         top_p: 1,
         frequency_penalty: 0,
-        presence_penalty: 0,
-      });
-      return response.data;
+        presence_penalty: 0
+      })
+      return response.data
     } catch (error) {
-      console.error(error);
+      console.error(error)
     }
   }
 
-  async chatGPTAns(context, question) {
-    console.log("Sending Question to GPT");
+  async chatGPTAns (context, question) {
+    console.log('Sending Question to GPT')
     const response = await openai.createChatCompletion({
-      model: "gpt-3.5-turbo",
+      model: 'gpt-3.5-turbo',
       messages: [
         {
-          role: "system",
-          content: "Answer the question based on the context below",
+          role: 'system',
+          content: 'Answer the question based on the context below'
         },
         {
-          role: "user",
+          role: 'user',
           content: `Context: ${context}
-                    Question: ${question}`,
+                    Question: ${question}`
         },
         {
-          role: "assistant",
-          content: "Answer: ",
-        },
+          role: 'assistant',
+          content: 'Answer: '
+        }
       ],
       temperature: 0,
       max_tokens: 256,
       top_p: 1,
       frequency_penalty: 0,
-      presence_penalty: 0,
-    });
-    return response.data;
+      presence_penalty: 0
+    })
+    return response.data
   }
 
-  async createNewsFromGPT(context) {
-    console.log("Generating News from GPT");
-    const max_tokens = 2048;
+  async createNewsFromGPT (context) {
+    console.log('Generating News from GPT')
+    const max_tokens = 2048
     const match_content = await axios.get(
       `${process.env.SPORTS_RADAR_URL}cricket-t2/en/matches/${context.match_id}/summary${process.env.SPORTS_RADAR_DEFAULT_FORMAT}?api_key=${process.env.SPORTS_RADAR_API_KEY}`
-    );
+    )
 
-    const updated_match_content = await this.removeFields(match_content);
+    const updated_match_content = await this.removeFields(match_content)
     const response = await this.getContentFromGPT(
       JSON.stringify(updated_match_content.data),
       context.language,
       max_tokens
-    );
-    return [updated_match_content.data, response];
+    )
+    return [updated_match_content.data, response]
   }
 
-  async removeFields(match_content) {
-    delete match_content.data.generated_at;
-    delete match_content.data.schema;
+  async removeFields (match_content) {
+    delete match_content.data.generated_at
+    delete match_content.data.schema
     if (
       match_content.data.statistics &&
       match_content.data.statistics.innings
     ) {
       for (const i in match_content.data.statistics.innings) {
-        delete match_content.data.statistics.innings[i].overs;
+        delete match_content.data.statistics.innings[i].overs
         if (
           match_content.data.statistics.innings[i].teams[0].statistics &&
           match_content.data.statistics.innings[i].teams[0].statistics
@@ -180,7 +180,7 @@ class GptService {
             .partnerships
         ) {
           delete match_content.data.statistics.innings[i].teams[0].statistics
-            .batting.partnerships;
+            .batting.partnerships
         }
         if (
           match_content.data.statistics.innings[i].teams[0].statistics &&
@@ -190,7 +190,7 @@ class GptService {
             .players
         ) {
           delete match_content.data.statistics.innings[i].teams[0].statistics
-            .batting.players;
+            .batting.players
         }
         if (
           match_content.data.statistics.innings[i].teams[1].statistics &&
@@ -200,42 +200,42 @@ class GptService {
             .players
         ) {
           delete match_content.data.statistics.innings[i].teams[1].statistics
-            .bowling.players;
+            .bowling.players
         }
       }
     }
-    return match_content;
+    return match_content
   }
 
-  async getFullContentGPT(transcript) {
-    console.log("Generating full content from GPT");
+  async getFullContentGPT (transcript) {
+    console.log('Generating full content from GPT')
     try {
       const messages = [
         {
-          role: "system",
+          role: 'system',
           content:
-            'You are a helpful assistant. Give the Full Content and label it as "Full Content:".',
+            'You are a helpful assistant. Give the Full Content and label it as "Full Content:".'
         },
         {
-          role: "user",
+          role: 'user',
           content: `${transcript}
-          Generate a news article for the above content`,
-        },
-      ];
+          Generate a news article for the above content`
+        }
+      ]
       const response = await openai.createChatCompletion({
-        model: "gpt-3.5-turbo",
+        model: 'gpt-3.5-turbo',
         messages: messages,
         temperature: 0,
         max_tokens: 1000,
         top_p: 1,
         frequency_penalty: 0,
-        presence_penalty: 0,
-      });
-      return response.data;
+        presence_penalty: 0
+      })
+      return response.data
     } catch (error) {
-      console.error(error);
+      console.error(error)
     }
   }
 }
 
-module.exports = new GptService();
+module.exports = new GptService()
