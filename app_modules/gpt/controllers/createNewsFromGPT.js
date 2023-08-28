@@ -1,9 +1,9 @@
-const express = require('express')
-const router = express.Router()
-const __constants = require('../../../config/constants')
-const validationOfAPI = require('../../../middlewares/validation')
+const express = require("express");
+const router = express.Router();
+const __constants = require("../../../config/constants");
+const validationOfAPI = require("../../../middlewares/validation");
 // const cache = require('../../../middlewares/requestCacheMiddleware')
-const GptService = require('../../../services/gpt/GptService')
+const GptService = require("../../../services/gpt/GptService");
 
 /**
  * @namespace -GPT-MODULE-
@@ -24,36 +24,35 @@ const GptService = require('../../../services/gpt/GptService')
  */
 
 const validationSchema = {
-  type: 'object',
+  type: "object",
   required: true,
   properties: {
     match_id: {
-      type: 'string',
-      required: true
-    }
-  }
-}
+      type: "string",
+      required: true,
+    },
+  },
+};
 const validation = (req, res, next) => {
-  return validationOfAPI(req, res, next, validationSchema, 'body')
-}
+  return validationOfAPI(req, res, next, validationSchema, "body");
+};
 const createNewsFromGPT = async (req, res) => {
-  console.log('req.body', req.body)
+  console.log("req.body", req.body);
   try {
-    const [fullContent, result] = await GptService.createNewsFromGPT(req.body)
+    const [fullContent, result] = await GptService.createNewsFromGPT(req.body);
 
     res.sendJson({
       type: __constants.RESPONSE_MESSAGES.SUCCESS,
-      data: { gpt: result },
-      fullContent: fullContent
-    })
+      data: { gpt: result, fullContent: fullContent },
+    });
   } catch (err) {
-    console.log('createNewsFromGPT Error', err)
+    console.log("createNewsFromGPT Error", err);
     return res.sendJson({
       type: err.type || __constants.RESPONSE_MESSAGES.SERVER_ERROR,
-      err: err.err || err
-    })
+      err: err.err || err,
+    });
   }
-}
+};
 
-router.post('/createNewsFromGPT', validation, createNewsFromGPT)
-module.exports = router
+router.post("/createNewsFromGPT", validation, createNewsFromGPT);
+module.exports = router;
