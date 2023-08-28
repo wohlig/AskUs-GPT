@@ -64,14 +64,14 @@ class GptService {
           {
             role: 'user',
             content: `${context}
-          1. Create a summary of the above article strictly in ${language} language in the range of 60-80 words.
+          1. Create a summary of the above article strictly in ${language} language in the range of 100-120 words.
           2. Create a headline for the summary strictly in ${language} language.
           3. Create tags for the above article strictly in ${language} language.`
           }
         ]
       }
       const response = await openai.createChatCompletion({
-        model: 'gpt-3.5-turbo',
+        model: 'gpt-4',
         messages: messages,
         temperature: 0,
         max_tokens: max_tokens,
@@ -205,6 +205,35 @@ class GptService {
       }
     }
     return match_content
+  }
+  async getFullContentGPT (transcript) {
+    console.log('Generating full content from GPT')
+    try {
+      const messages = [
+        {
+          role: 'system',
+          content:
+            'You are a helpful assistant. Give the Full Content and label it as "Full Content:".'
+        },
+        {
+          role: 'user',
+          content: `${transcript}
+          Generate a news article for the above content`
+        }
+      ]
+      const response = await openai.createChatCompletion({
+        model: 'gpt-3.5-turbo',
+        messages: messages,
+        temperature: 0,
+        max_tokens: 1000,
+        top_p: 1,
+        frequency_penalty: 0,
+        presence_penalty: 0
+      })
+      return response.data
+    } catch (error) {
+      console.error(error)
+    }
   }
 }
 
