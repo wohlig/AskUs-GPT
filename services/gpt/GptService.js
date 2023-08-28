@@ -160,7 +160,7 @@ class GptService {
       context.language,
       max_tokens
     )
-    return response
+    return [updated_match_content.data, response]
   }
 
   async removeFields (match_content) {
@@ -206,6 +206,7 @@ class GptService {
     }
     return match_content
   }
+
   async getFullContentGPT (transcript) {
     console.log('Generating full content from GPT')
     try {

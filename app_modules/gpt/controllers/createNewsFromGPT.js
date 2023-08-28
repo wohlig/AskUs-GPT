@@ -39,11 +39,12 @@ const validation = (req, res, next) => {
 const createNewsFromGPT = async (req, res) => {
   console.log('req.body', req.body)
   try {
-    const result = await GptService.createNewsFromGPT(req.body)
+    const [fullContent, result] = await GptService.createNewsFromGPT(req.body)
 
     res.sendJson({
       type: __constants.RESPONSE_MESSAGES.SUCCESS,
-      data: { gpt: result }
+      data: { gpt: result },
+      fullContent: fullContent
     })
   } catch (err) {
     console.log('createNewsFromGPT Error', err)
