@@ -71,7 +71,7 @@ class GptService {
         ]
       }
       const response = await openai.createChatCompletion({
-        model: 'gpt-4',
+        model: 'gpt-3.5-turbo',
         messages: messages,
         temperature: 0,
         max_tokens: max_tokens,
