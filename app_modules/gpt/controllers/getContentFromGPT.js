@@ -30,6 +30,10 @@ const validationSchema = {
     context: {
       type: 'string',
       required: true
+    },
+    type: {
+      type: 'string',
+      required: true
     }
   }
 }
@@ -39,7 +43,7 @@ const validation = (req, res, next) => {
 const getNewsFromGPT = async (req, res) => {
   console.log('req.body', req.body)
   try {
-    const result = await GptService.getContentFromGPT(req.body.context, req.body.lang)
+    const result = await GptService.getContentFromGPT(req.body.context, req.body.lang, req.body.type)
 
     res.sendJson({
       type: __constants.RESPONSE_MESSAGES.SUCCESS,

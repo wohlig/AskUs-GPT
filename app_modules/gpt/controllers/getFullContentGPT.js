@@ -27,7 +27,7 @@ const validationSchema = {
   type: 'object',
   required: true,
   properties: {
-    context: {
+    transcript: {
       type: 'string',
       required: true
     }
@@ -39,7 +39,6 @@ const validation = (req, res, next) => {
 const getFullContentGPT = async (req, res) => {
   try {
     const result = await GptService.getFullContentGPT(req.body.transcript)
-
     res.sendJson({
       type: __constants.RESPONSE_MESSAGES.SUCCESS,
       data: { gpt: result }

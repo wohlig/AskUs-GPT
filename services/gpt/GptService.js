@@ -33,7 +33,11 @@ class GptService {
     return response.data
   }
 
-  async getContentFromGPT (context, language, max_tokens = 1000) {
+  async getContentFromGPT (context, language, type, max_tokens = 1000, model = 'gpt-3.5-turbo') {
+    if (type == 'YouTube') {
+      max_tokens = 5000,
+      model = 'gpt-3.5-turbo-16k'
+    }
     console.log('Sending News to GPT', language)
     try {
       let messages
@@ -47,7 +51,7 @@ class GptService {
           {
             role: 'user',
             content: `${context}
-          1. Create a summary of the above article in the range of 60-80 words.
+          1. Create a summary of the above article in the range of 60 words.
           2. Create a headline for the summary.
           3. Create a tweet for the news article.
           4. Create tags for the above article.
@@ -64,14 +68,14 @@ class GptService {
           {
             role: 'user',
             content: `${context}
-          1. Create a summary of the above article strictly in ${language} language in the range of 100-120 words.
+          1. Create a summary of the above article strictly in ${language} language in the range of 60 words.
           2. Create a headline for the summary strictly in ${language} language.
           3. Create tags for the above article strictly in ${language} language.`
           }
         ]
       }
       const response = await openai.createChatCompletion({
-        model: 'gpt-3.5-turbo',
+        model: model,
         messages: messages,
         temperature: 0,
         max_tokens: max_tokens,
@@ -223,10 +227,10 @@ class GptService {
         }
       ]
       const response = await openai.createChatCompletion({
-        model: 'gpt-3.5-turbo',
+        model: 'gpt-3.5-turbo-16k',
         messages: messages,
         temperature: 0,
-        max_tokens: 1000,
+        max_tokens: 5000,
         top_p: 1,
         frequency_penalty: 0,
         presence_penalty: 0
