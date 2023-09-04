@@ -3,6 +3,7 @@ const configuration = new Configuration({
   apiKey: process.env.OPENAI_API_KEY
 })
 const openai = new OpenAIApi(configuration)
+const axios = require('axios')
 
 class GptService {
   async getAnsFromGPT (context, question) {
@@ -32,7 +33,11 @@ class GptService {
     return response.data
   }
 
-  async getContentFromGPT (context, language) {
+  async getContentFromGPT (context, language, type, max_tokens = 1000, model = 'gpt-3.5-turbo') {
+    if (type == 'YouTube') {
+      max_tokens = 5000,
+      model = 'gpt-3.5-turbo-16k'
+    }
     console.log('Sending News to GPT', language)
     try {
       let messages
@@ -70,10 +75,10 @@ class GptService {
         ]
       }
       const response = await openai.createChatCompletion({
-        model: 'gpt-3.5-turbo',
+        model: model,
         messages: messages,
         temperature: 0,
-        max_tokens: 1000,
+        max_tokens: max_tokens,
         top_p: 1,
         frequency_penalty: 0,
         presence_penalty: 0
@@ -144,6 +149,36 @@ class GptService {
       presence_penalty: 0
     })
     return response.data
+  }
+
+  async getFullContentGPT (transcript) {
+    console.log('Generating full content from GPT')
+    try {
+      const messages = [
+        {
+          role: 'system',
+          content:
+            'You are a helpful assistant. Give the Full Content and label it as "Full Content:".'
+        },
+        {
+          role: 'user',
+          content: `${transcript}
+          Generate a news article for the above content`
+        }
+      ]
+      const response = await openai.createChatCompletion({
+        model: 'gpt-3.5-turbo-16k',
+        messages: messages,
+        temperature: 0,
+        max_tokens: 5000,
+        top_p: 1,
+        frequency_penalty: 0,
+        presence_penalty: 0
+      })
+      return response.data
+    } catch (error) {
+      console.error(error)
+    }
   }
 }
 

@@ -27,11 +27,7 @@ const validationSchema = {
   type: 'object',
   required: true,
   properties: {
-    context: {
-      type: 'string',
-      required: true
-    },
-    type: {
+    transcript: {
       type: 'string',
       required: true
     }
@@ -40,10 +36,9 @@ const validationSchema = {
 const validation = (req, res, next) => {
   return validationOfAPI(req, res, next, validationSchema, 'body')
 }
-const getNewsFromGPT = async (req, res) => {
+const getFullContentGPT = async (req, res) => {
   try {
-    const result = await GptService.getContentFromGPT(req.body.context, req.body.lang, req.body.type)
-
+    const result = await GptService.getFullContentGPT(req.body.transcript)
     res.sendJson({
       type: __constants.RESPONSE_MESSAGES.SUCCESS,
       data: { gpt: result }
@@ -57,5 +52,5 @@ const getNewsFromGPT = async (req, res) => {
   }
 }
 
-router.post('/getNewsFromGPT', validation, getNewsFromGPT)
+router.post('/getFullContentGPT', validation, getFullContentGPT)
 module.exports = router
