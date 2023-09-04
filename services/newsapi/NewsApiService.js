@@ -27,7 +27,6 @@ class NewsAPiService {
       }
       categoryName = language.toLowerCase() + '_' + categoryName.toLowerCase()
     }
-    console.log('🚀 ~ file: NewsApiService.js:11 ~ NewsAPiService ~ getNewsFromNewsAPi ~ categoryName:', categoryName)
     const news = await axios.get(
         `https://newsapi.in/newsapi/news.php?key=${process.env.NEWSAPI_KEY}&category=${categoryName}`
     )
