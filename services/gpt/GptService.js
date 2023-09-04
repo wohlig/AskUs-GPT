@@ -46,7 +46,7 @@ class GptService {
           {
             role: 'user',
             content: `${context}
-          1. Create a summary of the above article in the range of 60 words.
+          1. Create a summary of the above article in the range of 60 words. It is very important for the summary to be exactly 60 words. Do not go over or under this length.
           2. Create a headline for the summary.
           3. Create a tweet for the news article.
           4. Create tags for the above article.
@@ -63,7 +63,7 @@ class GptService {
           {
             role: 'user',
             content: `${context}
-          1. Create a summary of the above article strictly in ${language} language in the range of 60 words.
+          1. Create a summary of the above article strictly in ${language} language in the range of 60 words. It is very important for the summary to be exactly 60 words. Do not go over or under this length.
           2. Create a headline for the summary strictly in ${language} language.
           3. Create tags for the above article strictly in ${language} language.`
           }
