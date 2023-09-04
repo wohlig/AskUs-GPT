@@ -151,66 +151,6 @@ class GptService {
     return response.data
   }
 
-  async createNewsFromGPT (context) {
-    console.log('Generating News from GPT')
-    const max_tokens = 2048
-    const match_content = await axios.get(
-      `${process.env.SPORTS_RADAR_URL}cricket-t2/en/matches/${context.match_id}/summary${process.env.SPORTS_RADAR_DEFAULT_FORMAT}?api_key=${process.env.SPORTS_RADAR_API_KEY}`
-    )
-
-    const updated_match_content = await this.removeFields(match_content)
-    const response = await this.getContentFromGPT(
-      JSON.stringify(updated_match_content.data),
-      context.language,
-      max_tokens
-    )
-    return [updated_match_content.data, response]
-  }
-
-  async removeFields (match_content) {
-    delete match_content.data.generated_at
-    delete match_content.data.schema
-    if (
-      match_content.data.statistics &&
-      match_content.data.statistics.innings
-    ) {
-      for (const i in match_content.data.statistics.innings) {
-        delete match_content.data.statistics.innings[i].overs
-        if (
-          match_content.data.statistics.innings[i].teams[0].statistics &&
-          match_content.data.statistics.innings[i].teams[0].statistics
-            .batting &&
-          match_content.data.statistics.innings[i].teams[0].statistics.batting
-            .partnerships
-        ) {
-          delete match_content.data.statistics.innings[i].teams[0].statistics
-            .batting.partnerships
-        }
-        if (
-          match_content.data.statistics.innings[i].teams[0].statistics &&
-          match_content.data.statistics.innings[i].teams[0].statistics
-            .batting &&
-          match_content.data.statistics.innings[i].teams[0].statistics.batting
-            .players
-        ) {
-          delete match_content.data.statistics.innings[i].teams[0].statistics
-            .batting.players
-        }
-        if (
-          match_content.data.statistics.innings[i].teams[1].statistics &&
-          match_content.data.statistics.innings[i].teams[1].statistics
-            .bowling &&
-          match_content.data.statistics.innings[i].teams[1].statistics.bowling
-            .players
-        ) {
-          delete match_content.data.statistics.innings[i].teams[1].statistics
-            .bowling.players
-        }
-      }
-    }
-    return match_content
-  }
-
   async getFullContentGPT (transcript) {
     console.log('Generating full content from GPT')
     try {
