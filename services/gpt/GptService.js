@@ -86,6 +86,9 @@ class GptService {
       console.log(response.data)
       return response.data
     } catch (error) {
+      await axios.post(
+        `https://api.telegram.org/bot${process.env.TELEGRAM_TOKEN}/sendMessage?chat_id=@newsShieldLogs&text=Title:%20Content%20GPT%20Error\n\nMessage:%20${error.message}`
+      )
       console.error(error)
     }
   }
@@ -119,6 +122,9 @@ class GptService {
       })
       return response.data
     } catch (error) {
+      await axios.post(
+        `https://api.telegram.org/bot${process.env.TELEGRAM_TOKEN}/sendMessage?chat_id=@newsShieldLogs&text=Title:%20Classification%20GPT%20Error\n\nMessage:%20${error.message}`
+      )
       console.error(error)
     }
   }
@@ -177,6 +183,9 @@ class GptService {
       })
       return response.data
     } catch (error) {
+      await axios.post(
+        `https://api.telegram.org/bot${process.env.TELEGRAM_TOKEN}/sendMessage?chat_id=@newsShieldLogs&text=Title:%20Full%20Content%20GPT%20Error\n\nMessage:%20${error.message}`
+      )
       console.error(error)
     }
   }
