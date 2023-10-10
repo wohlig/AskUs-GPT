@@ -86,7 +86,8 @@ class GptService {
       console.log(response.data)
       return response.data
     } catch (error) {
-      console.error(error)
+      console.error('Error in getContentFromGPT', error)
+      return error
     }
   }
 
@@ -119,7 +120,8 @@ class GptService {
       })
       return response.data
     } catch (error) {
-      console.error(error)
+      console.error('Error in getClassificationGPT', error)
+      return error
     }
   }
 
@@ -177,7 +179,8 @@ class GptService {
       })
       return response.data
     } catch (error) {
-      console.error(error)
+      console.error('getFullContentGPT', error)
+      return error
     }
   }
 }
