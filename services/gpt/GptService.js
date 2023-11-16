@@ -52,7 +52,7 @@ class GptService {
             role: 'user',
             content: `${context}
           1. Provide a summary of the key points from the article above. The summary should be exactly 60 words in length. Focus on capturing the main ideas and key details in a clear and concise way. Ensure the full summary is 60 words, do not go over or under. Summarize the essence of the article accurately regardless of its length.
-          2. Create a headline for the summary.
+          2. Create a headline in under 20 words for the summary.
           3. Create a tweet for the news article.
           4. Create tags for the above article.
           5. Give the same summary created above in bullet points.`
