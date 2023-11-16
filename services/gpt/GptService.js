@@ -69,7 +69,7 @@ class GptService {
             role: 'user',
             content: `${context}
           1. Create a summary of the above article strictly in ${language} language in the range of 60 words. It is very important for the summary to be exactly 60 words. Do not go over or under this length.
-          2. Create a headline for the summary strictly in ${language} language.
+          2. Create a headline in under 20 words for the summary strictly in ${language} language.
           3. Create tags for the above article strictly in ${language} language.`
           }
         ]
