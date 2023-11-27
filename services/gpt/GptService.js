@@ -4,7 +4,7 @@ const configuration = new Configuration({
 })
 const openai = new OpenAIApi(configuration)
 const axios = require('axios')
-
+const fs = require('fs')
 class GptService {
   async getAnsFromGPT (context, question) {
     console.log('Sending Question to GPT')
@@ -52,7 +52,7 @@ class GptService {
             role: 'user',
             content: `${context}
           1. Provide a summary of the key points from the article above. The summary should be exactly 60 words in length. Focus on capturing the main ideas and key details in a clear and concise way. Ensure the full summary is 60 words, do not go over or under. Summarize the essence of the article accurately regardless of its length.
-          2. Create a headline for the summary.
+          2. Create a headline in under 20 words for the summary.
           3. Create a tweet for the news article.
           4. Create tags for the above article.
           5. Give the same summary created above in bullet points.`
@@ -69,7 +69,7 @@ class GptService {
             role: 'user',
             content: `${context}
           1. Create a summary of the above article strictly in ${language} language in the range of 60 words. It is very important for the summary to be exactly 60 words. Do not go over or under this length.
-          2. Create a headline for the summary strictly in ${language} language.
+          2. Create a headline in under 20 words for the summary strictly in ${language} language.
           3. Create tags for the above article strictly in ${language} language.`
           }
         ]
@@ -238,6 +238,35 @@ class GptService {
     } catch (error) {
       console.error('getFullContentGPT', error)
       return error
+    }
+  }
+
+  async adDetectorFineTunedModel (news) {
+    try {
+      const messages = [
+        {
+          role: 'system',
+          content:
+            'You classify articles into news and ads'
+        },
+        {
+          role: 'user',
+          content: `Is this article an ad? Title: ${news.headline}, Article: ${news.summary}?`
+        }
+      ]
+      console.log('Sending News to GPT', messages)
+      const fineTunedModel = await openai.createChatCompletion({
+        model: process.env.AD_DETECTOR_FINE_TUNED_MODEL_ID,
+        messages: messages,
+        temperature: 0,
+        max_tokens: 1000,
+        top_p: 1,
+        frequency_penalty: 0,
+        presence_penalty: 0
+      })
+      return fineTunedModel.data
+    } catch (error) {
+      console.error('Error in fineTunedModel', error)
     }
   }
 }
