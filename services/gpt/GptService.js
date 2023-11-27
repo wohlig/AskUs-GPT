@@ -4,7 +4,7 @@ const configuration = new Configuration({
 })
 const openai = new OpenAIApi(configuration)
 const axios = require('axios')
-
+const fs = require('fs')
 class GptService {
   async getAnsFromGPT (context, question) {
     console.log('Sending Question to GPT')
@@ -181,6 +181,35 @@ class GptService {
     } catch (error) {
       console.error('getFullContentGPT', error)
       return error
+    }
+  }
+
+  async adDetectorFineTunedModel (news) {
+    try {
+      const messages = [
+        {
+          role: 'system',
+          content:
+            'You classify articles into news and ads'
+        },
+        {
+          role: 'user',
+          content: `Is this article an ad? Title: ${news.headline}, Article: ${news.summary}?`
+        }
+      ]
+      console.log('Sending News to GPT', messages)
+      const fineTunedModel = await openai.createChatCompletion({
+        model: process.env.AD_DETECTOR_FINE_TUNED_MODEL_ID,
+        messages: messages,
+        temperature: 0,
+        max_tokens: 1000,
+        top_p: 1,
+        frequency_penalty: 0,
+        presence_penalty: 0
+      })
+      return fineTunedModel.data
+    } catch (error) {
+      console.error('Error in fineTunedModel', error)
     }
   }
 }
