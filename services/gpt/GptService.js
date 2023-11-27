@@ -183,13 +183,14 @@ class GptService {
       return error
     }
   }
-  async adDetectorFineTunedModel(news) {
+
+  async adDetectorFineTunedModel (news) {
     try {
       const messages = [
         {
           role: 'system',
           content:
-            `You classify articles into news and ads`
+            'You classify articles into news and ads'
         },
         {
           role: 'user',
@@ -208,7 +209,7 @@ class GptService {
       })
       return fineTunedModel.data
     } catch (error) {
-      console.error("Error in fineTunedModel", error);
+      console.error('Error in fineTunedModel', error)
     }
   }
 }
