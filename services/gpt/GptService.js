@@ -42,7 +42,7 @@ class GptService {
           {
             role: 'system',
             content:
-              'You are a helpful assistant. First give the summary, label it as "Summary:", then the headline, label it as "Headline:" then the tweet, label it as "Tweet:", then the tags, label it as "Tags:", and finally the bullet points, label it as "Bullets:".'
+              'You are a helpful assistant. First give the summary, label it as "Summary:", then the headline, label it as "Headline:", then the tweet, label it as "Tweet:", then the tags, label it as "Tags:", and finally the bullet points, label it as "Bullets:". Do not include any ids in any of the answers'
           },
           {
             role: 'user',
@@ -149,12 +149,13 @@ class GptService {
 
   async createNewsFromGPT (context) {
     console.log('Generating News from GPT')
-    const max_tokens = 2048
+    const max_tokens = 3000
     const match_content = await axios.get(
       `${process.env.SPORTS_RADAR_URL}cricket-t2/en/matches/${context.match_id}/summary${process.env.SPORTS_RADAR_DEFAULT_FORMAT}?api_key=${process.env.SPORTS_RADAR_API_KEY}`
     )
-
+    console.log(match_content.data.statistics)
     const updated_match_content = await this.removeFields(match_content)
+    console.log(updated_match_content.data)
     const response = await this.getContentFromGPT(
       JSON.stringify(updated_match_content.data),
       context.language,
@@ -163,15 +164,27 @@ class GptService {
     return [updated_match_content.data, response]
   }
 
+  async createNewsOfLiveMatchFromGPT (context) {
+    console.log('Generating News of Live Match from GPT')
+    const max_tokens = 3000
+    const response = await this.getContentFromGPT(
+      JSON.stringify(context.fullContent),
+      context.language,
+      max_tokens
+    )
+    return [context.fullContent, response]
+  }
+
   async removeFields (match_content) {
     delete match_content.data.generated_at
     delete match_content.data.schema
+    // delete match_content.data.statistics
     if (
       match_content.data.statistics &&
       match_content.data.statistics.innings
     ) {
       for (const i in match_content.data.statistics.innings) {
-        delete match_content.data.statistics.innings[i].overs
+        // delete match_content.data.statistics.innings[i].overs
         if (
           match_content.data.statistics.innings[i].teams[0].statistics &&
           match_content.data.statistics.innings[i].teams[0].statistics
@@ -180,6 +193,15 @@ class GptService {
             .partnerships
         ) {
           delete match_content.data.statistics.innings[i].teams[0].statistics
+            .batting.partnerships
+        } else if (
+          match_content.data.statistics.innings[i].teams[1].statistics &&
+          match_content.data.statistics.innings[i].teams[1].statistics
+            .batting &&
+          match_content.data.statistics.innings[i].teams[1].statistics.batting
+            .partnerships
+        ) {
+          delete match_content.data.statistics.innings[i].teams[1].statistics
             .batting.partnerships
         }
         if (
@@ -191,6 +213,15 @@ class GptService {
         ) {
           delete match_content.data.statistics.innings[i].teams[0].statistics
             .batting.players
+        } else if (
+          match_content.data.statistics.innings[i].teams[1].statistics &&
+          match_content.data.statistics.innings[i].teams[1].statistics
+            .batting &&
+          match_content.data.statistics.innings[i].teams[1].statistics.batting
+            .partnerships
+        ) {
+          delete match_content.data.statistics.innings[i].teams[1].statistics
+            .batting.players
         }
         if (
           match_content.data.statistics.innings[i].teams[1].statistics &&
@@ -201,6 +232,34 @@ class GptService {
         ) {
           delete match_content.data.statistics.innings[i].teams[1].statistics
             .bowling.players
+        } else if (
+          match_content.data.statistics.innings[i].teams[0].statistics &&
+          match_content.data.statistics.innings[i].teams[0].statistics
+            .bowling &&
+          match_content.data.statistics.innings[i].teams[0].statistics.bowling
+            .players
+        ) {
+          delete match_content.data.statistics.innings[i].teams[0].statistics
+            .bowling.players
+        }
+        if (
+          match_content.data.statistics.innings[i].teams[1].statistics &&
+          match_content.data.statistics.innings[i].teams[1].statistics
+            .bowling &&
+          match_content.data.statistics.innings[i].teams[1].statistics.bowling
+            .bowling_spells
+        ) {
+          delete match_content.data.statistics.innings[i].teams[1].statistics.bowling
+            .bowling_spells
+        } else if (
+          match_content.data.statistics.innings[i].teams[0].statistics &&
+          match_content.data.statistics.innings[i].teams[0].statistics
+            .bowling &&
+          match_content.data.statistics.innings[i].teams[0].statistics.bowling
+            .bowling_spells
+        ) {
+          delete match_content.data.statistics.innings[i].teams[0].statistics.bowling
+            .bowling_spells
         }
       }
     }
