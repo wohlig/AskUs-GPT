@@ -125,6 +125,63 @@ class GptService {
     }
   }
 
+  async getAdvancedClassificationGPT (summary, headline, updatedCategories) {
+    console.log('Sending Summary & Headline to GPT')
+    try {
+      const messages = [
+        {
+          role: 'system',
+          content:
+            'You are a helpful assistant. First give the categories, label it as "Categories:", then the sentiment, label it as "Sentiment:" and finally the Advanced Sentiment, label it as "AdvancedSentiment:".'
+        },
+        {
+          role: 'user',
+          content: `Summary: ${summary}
+          Headline: ${headline}
+        1. Analyze the provided summary and headline and categorize it using the following predefined categories. Each article may have multiple assigned categories, but ensure that all assigned categories are selected from the list below. Do not include any new categories that are not part of the provided list. The category 'nation' provided below pertains to news about India. The category 'advertisement' provided below pertains to any news that promotes the sale, discounts, features, price of any product be it a car, or a technology device, etc. Also, news related to games will come under 'advertisement' category. Provide only the category names in lowercase format and in a single line, removing any preceding numbers.
+        ${updatedCategories}
+        2. Analyse the above summary and headline and return the sentiment of that article. The sentiments you possess are [Positive, Negative, Neutral]. Give the answer in 1 word only.
+        3. Next, analyze the news and provide an advanced sentiment for the news. Choose one of the following advanced sentiments only from the below list also having its description and return only the name of the sentiment in one word.
+        - Optimism: Positive developments, success stories, or improvements.
+        - Jubilation: Celebrating achievements, milestones, or positive events.
+        - Hope: Encouraging or inspiring news that offers hope for the future.
+        - Relief: Reporting on the resolution of a crisis or the prevention of a negative event.
+        - Progress: News about advancements, innovations, or positive changes.
+        - Alarm: News that raises concern, often related to urgent or alarming situations.
+        - Anger: Stories that provoke anger or outrage due to injustices or negative outcomes.
+        - Grief: Reporting on tragedies, disasters, or loss that evokes sadness and sympathy.
+        - Disappointment: News that falls short of expectations or results in letdowns.
+        - Frustration: Reporting on persistent problems or issues that cause annoyance.
+        - Informational: Reporting facts without emotional bias or opinion.
+        - Matter-of-fact: Unbiased presentation of events, often in a straightforward manner.
+        - Educational: News that aims to inform and educate without a particular emotional tone.
+        - Reporting: Neutral coverage of events, typically with minimal emotional expression.
+        - Statistic-based: News presenting data and statistics without a clear emotional tone.
+        - Ambivalence: News that includes both positive and negative aspects.
+        - Balanced: Reporting that provides a fair representation of contrasting views.
+        - Bittersweet: News that combines elements of both joy and sorrow.
+        - Compassion: News expressing empathy for those facing hardships or suffering.
+        - Support: Stories that offer encouragement and assistance to affected individuals or communities.
+        - Solidarity: News that unites people in shared understanding or support for a cause.
+        `
+        }
+      ]
+      const response = await openai.createChatCompletion({
+        model: 'gpt-3.5-turbo',
+        messages: messages,
+        temperature: 0,
+        max_tokens: 1000,
+        top_p: 1,
+        frequency_penalty: 0,
+        presence_penalty: 0
+      })
+      return response.data
+    } catch (error) {
+      console.error('Error in getClassificationGPT', error)
+      return error
+    }
+  }
+
   async chatGPTAns (context, question) {
     console.log('Sending Question to GPT')
     const response = await openai.createChatCompletion({
