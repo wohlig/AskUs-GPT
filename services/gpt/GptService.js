@@ -40,6 +40,7 @@ class GptService {
     }
     console.log('Sending News to GPT', language)
     try {
+      console.log(trends)
       let messages
       if (language === 'English') {
         messages = [
