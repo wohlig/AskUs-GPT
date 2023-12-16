@@ -57,7 +57,7 @@ class GptService {
           3. Create a tweet for the news article.
           4. Create tags for the above article.
           5. Give the same summary created above in bullet points.
-          6. Compare the news article provided above with each array from the trending tags provided below and then give a similarity score (no decimal scores) out of 10 for every array from the trending tags. Provide only the similarity scores in a single line removing any preceding serial numbers or letters.
+          6. Compare the news article provided above with each array from the trending tags provided below and then give a similarity score (no decimal scores) out of 10 for every array from the trending tags. A high similarity score means that the array from trending tags is highly related to the news article and a low similarity score means that the array from trending tags is not too related to the news article. Provide only the similarity scores in a single line removing any preceding serial numbers or letters.
           ${trends}`
           }
         ]
