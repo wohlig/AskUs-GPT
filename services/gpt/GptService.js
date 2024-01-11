@@ -33,7 +33,7 @@ class GptService {
     return response.data
   }
 
-  async getContentFromGPT (context, language, type, trends, max_tokens = 1000, model = 'gpt-3.5-turbo-16k') {
+  async getContentFromGPT (context, language, type, trends, trendsArrayLength, max_tokens = 1000, model = 'gpt-3.5-turbo-16k') {
     if (type == 'YouTube') {
       max_tokens = 5000,
       model = 'gpt-3.5-turbo-16k'
@@ -41,6 +41,7 @@ class GptService {
     console.log('Sending News to GPT', language)
     try {
       console.log(trends)
+      console.log(trendsArrayLength)
       let messages
       if (language === 'English') {
         messages = [
@@ -57,7 +58,7 @@ class GptService {
           3. Create a tweet for the news article.
           4. Create tags for the above article.
           5. Give the same summary created above in bullet points.
-          6. Compare the news article provided above with each array from the trending tags provided below and then give a similarity score (no decimal scores) out of 10 for every array from the trending tags. A high similarity score means that the array from trending tags is highly related to the news article and a low similarity score means that the array from trending tags is not too related to the news article. Provide only the similarity scores in a single line removing any preceding serial numbers or letters.
+          6. Compare the news article provided above with each array from the trending tags provided below and then give a similarity score (no decimal scores) out of 10 for every array from the trending tags. A high similarity score means that the array from trending tags is highly related to the news article and a low similarity score means that the array from trending tags is not too related to the news article. Provide only the similarity scores in a single line removing any preceding serial numbers or letters. If ${trendsArrayLength} is 1, then provide only 1 similarity score
           ${trends}`
           }
         ]
@@ -88,7 +89,7 @@ class GptService {
         frequency_penalty: 0,
         presence_penalty: 0
       })
-      console.log(response.data)
+      console.log(response.data.choices[0].message)
       return response.data
     } catch (error) {
       console.error('Error in getContentFromGPT', error)
