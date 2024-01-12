@@ -33,7 +33,7 @@ class GptService {
     return response.data
   }
 
-  async getContentFromGPT (context, language, type, trends, trendsArrayLength, max_tokens = 1000, model = 'gpt-3.5-turbo-16k') {
+  async getContentFromGPT (context, language, type, trends, max_tokens = 1000, model = 'gpt-3.5-turbo-16k') {
     if (type == 'YouTube') {
       max_tokens = 5000,
       model = 'gpt-3.5-turbo-16k'
@@ -41,7 +41,6 @@ class GptService {
     console.log('Sending News to GPT', language)
     try {
       console.log(trends)
-      console.log(trendsArrayLength)
       let messages
       if (language === 'English') {
         messages = [
