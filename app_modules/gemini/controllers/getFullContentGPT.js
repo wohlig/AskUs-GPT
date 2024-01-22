@@ -41,7 +41,7 @@ const getFullContentGPT = async (req, res) => {
     const result = await geminiServices.getFullContentGPT(req.body.transcript)
     res.sendJson({
       type: __constants.RESPONSE_MESSAGES.SUCCESS,
-      data: { gpt: result }
+      data: { gpt: result.classification, usage: result.totalTokens  }
     })
   } catch (err) {
     console.log('getContentFromGPT Error', err)
