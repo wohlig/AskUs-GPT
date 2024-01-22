@@ -3,7 +3,7 @@ const router = express.Router()
 const __constants = require('../../../config/constants')
 const validationOfAPI = require('../../../middlewares/validation')
 // const cache = require('../../../middlewares/requestCacheMiddleware')
-const GptService = require('../../../services/gpt/GptService')
+const geminiServices = require('../../../services/gemini/GeminiService')
 
 /**
  * @namespace -GPT-MODULE-
@@ -30,10 +30,6 @@ const validationSchema = {
     context: {
       type: 'string',
       required: true
-    },
-    type: {
-      type: 'string',
-      required: true
     }
   }
 }
@@ -42,8 +38,7 @@ const validation = (req, res, next) => {
 }
 const getNewsFromGPT = async (req, res) => {
   try {
-    const result = await GptService.getContentFromGPT(req.body.context, req.body.lang, req.body.type, req.body.trends)
-
+    const result = await geminiServices.getContentFromGPT(req.body.context, req.body.lang, req.body.trends)
     res.sendJson({
       type: __constants.RESPONSE_MESSAGES.SUCCESS,
       data: { gpt: result }

@@ -2,8 +2,8 @@ const express = require('express')
 const router = express.Router()
 const __constants = require('../../../config/constants')
 const validationOfAPI = require('../../../middlewares/validation')
-// const cache = require('../../../middlewares/requestCacheMiddleware')
-const GptService = require('../../../services/gpt/GptService')
+const cache = require('../../../middlewares/requestCacheMiddleware')
+const geminiServices = require('../../../services/gemini/GeminiService')
 
 /**
  * @namespace -GPT-MODULE-
@@ -12,13 +12,13 @@ const GptService = require('../../../services/gpt/GptService')
 
 /**
  * @memberof -GPT-module-
- * @name getContentFromGPT
- * @path {POST} /api/gpt/getContentFromGPT
- * @description Bussiness Logic :- In getContentFromGPT API, we get summary, headline, tweet and tags of the context from gpt
+ * @name getAnsFromGPT
+ * @path {POST} /api/gpt/getAnsFromGPT
+ * @description Bussiness Logic :- In getAnsFromGPT API, we get answers of the question from gpt.
  * @response {string} ContentType=application/json - Response content type.
  * @response {string} metadata.msg=Success  - Response got successfully.
  * @response {string} metadata.data - It will return the data.
- * @code {200} if the msg is success the api returns the summary, headline, tweet and tags of the context.
+ * @code {200} if the msg is success the api returns the answer.
  * @author Bilal Sani, 3rd March 2023
  * *** Last-Updated :- Bilal Sani, 3rd March 2023 ***
  */
@@ -31,7 +31,7 @@ const validationSchema = {
       type: 'string',
       required: true
     },
-    type: {
+    question: {
       type: 'string',
       required: true
     }
@@ -40,22 +40,15 @@ const validationSchema = {
 const validation = (req, res, next) => {
   return validationOfAPI(req, res, next, validationSchema, 'body')
 }
-const getNewsFromGPT = async (req, res) => {
+const getAnsFromGPT = async (req, res) => {
   try {
-    const result = await GptService.getContentFromGPT(req.body.context, req.body.lang, req.body.type, req.body.trends)
-
-    res.sendJson({
-      type: __constants.RESPONSE_MESSAGES.SUCCESS,
-      data: { gpt: result }
-    })
+    const result = await geminiServices.getAnsFromGPT(req.body.context, req.body.question)
+    res.sendJson({ type: __constants.RESPONSE_MESSAGES.SUCCESS, data: { data: result } })
   } catch (err) {
-    console.log('getContentFromGPT Error', err)
-    return res.sendJson({
-      type: err.type || __constants.RESPONSE_MESSAGES.SERVER_ERROR,
-      err: err.err || err
-    })
+    console.log('getAnsFromGPT Error', err)
+    return res.sendJson({ type: err.type || __constants.RESPONSE_MESSAGES.SERVER_ERROR, err: err.err || err })
   }
 }
 
-router.post('/getNewsFromGPT', validation, getNewsFromGPT)
+router.post('/getAnsFromGPT', validation, getAnsFromGPT)
 module.exports = router
