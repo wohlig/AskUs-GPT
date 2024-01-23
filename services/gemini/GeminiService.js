@@ -50,8 +50,16 @@ class GeminiService {
     Answer:`
     const result = await chat.sendMessage(userInput)
     const response = result.response
-    console.log(response.text())
-    return response.text()
+    const promptTokens = await model.countTokens(userInput)
+      const completionTokens = await model.countTokens(response.text())
+      return {
+        answer: response.text(),
+        totalTokens: {
+            prompt_tokens: promptTokens.totalTokens,
+            completion_tokens: completionTokens.totalTokens,
+            total_tokens: promptTokens.totalTokens + completionTokens.totalTokens
+        }
+    }
   }
 
   async getContentFromGPT (context, language, trends) {
