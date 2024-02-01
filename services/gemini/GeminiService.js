@@ -57,7 +57,6 @@ class GeminiService {
   async getContentFromGPT (context, language, trends) {
     console.log('Sending News to GPT', language)
     try {
-      console.log(trends)
       let prompt = ''
       if (language == 'English') {
         prompt = `You are a helpful assistant. First give the summary, label it as "Summary:", then the headline, label it as "Headline:" then the tweet, label it as "Tweet:", then the tags, label it as "Tags:", then the bullet points, label it as "Bullets:", and finally the similarity scores, label them as "Similarities:".
@@ -87,6 +86,7 @@ class GeminiService {
         // safetySettings,
       })
       const response = result.response
+      console.log(response.text())
       const promptTokens = await model.countTokens(prompt)
       const completionTokens = await model.countTokens(response.text())
       return {
