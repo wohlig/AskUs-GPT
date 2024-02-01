@@ -92,11 +92,11 @@ class GeminiService {
       return {
         classification: response.text(),
         totalTokens: {
-            prompt_tokens: promptTokens.totalTokens,
-            completion_tokens: completionTokens.totalTokens,
-            total_tokens: promptTokens.totalTokens + completionTokens.totalTokens
+          prompt_tokens: promptTokens.totalTokens,
+          completion_tokens: completionTokens.totalTokens,
+          total_tokens: promptTokens.totalTokens + completionTokens.totalTokens
         }
-    }
+      }
     } catch (error) {
       console.error('Error in getContentFromGPT', error)
       return error
@@ -135,25 +135,25 @@ class GeminiService {
         - Support: Stories that offer encouragement and assistance to affected individuals or communities.
         - Solidarity: News that unites people in shared understanding or support for a cause.`
 
-        const parts = [
-            { text: prompt }
-        ]
-        const result = await model.generateContent({
-            contents: [{ role: 'user', parts }],
-            generationConfig
-            // safetySettings,
-        })
-        const response = result.response
-        const promptTokens = await model.countTokens(prompt)
+      const parts = [
+        { text: prompt }
+      ]
+      const result = await model.generateContent({
+        contents: [{ role: 'user', parts }],
+        generationConfig
+        // safetySettings,
+      })
+      const response = result.response
+      const promptTokens = await model.countTokens(prompt)
       const completionTokens = await model.countTokens(response.text())
       return {
         classification: response.text(),
         totalTokens: {
-            prompt_tokens: promptTokens.totalTokens,
-            completion_tokens: completionTokens.totalTokens,
-            total_tokens: promptTokens.totalTokens + completionTokens.totalTokens
+          prompt_tokens: promptTokens.totalTokens,
+          completion_tokens: completionTokens.totalTokens,
+          total_tokens: promptTokens.totalTokens + completionTokens.totalTokens
         }
-    }
+      }
     } catch (error) {
       console.error('Error in getClassificationGPT', error)
       return error
@@ -181,11 +181,11 @@ class GeminiService {
       return {
         classification: response.text(),
         totalTokens: {
-            prompt_tokens: promptTokens.totalTokens,
-            completion_tokens: completionTokens.totalTokens,
-            total_tokens: promptTokens.totalTokens + completionTokens.totalTokens
+          prompt_tokens: promptTokens.totalTokens,
+          completion_tokens: completionTokens.totalTokens,
+          total_tokens: promptTokens.totalTokens + completionTokens.totalTokens
         }
-    }
+      }
     } catch (error) {
       console.error('getFullContentGPT', error)
       return error
