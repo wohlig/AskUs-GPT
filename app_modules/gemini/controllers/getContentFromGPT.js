@@ -39,9 +39,10 @@ const validation = (req, res, next) => {
 const getNewsFromGPT = async (req, res) => {
   try {
     const result = await geminiServices.getContentFromGPT(req.body.context, req.body.lang, req.body.trends)
+    console.log('result', result)
     res.sendJson({
       type: __constants.RESPONSE_MESSAGES.SUCCESS,
-      data: { gpt: result.classification, usage: result.totalTokens  }
+      data: { gpt: result.classification, usage: result.totalTokens }
     })
   } catch (err) {
     console.log('getContentFromGPT Error', err)

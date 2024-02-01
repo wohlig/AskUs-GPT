@@ -47,7 +47,7 @@ const getAdvancedClassificationGPT = async (req, res) => {
 
     res.sendJson({
       type: __constants.RESPONSE_MESSAGES.SUCCESS,
-      data: { gpt: result.classification, usage: result.totalTokens  }
+      data: { gpt: result.classification, usage: result.totalTokens }
     })
   } catch (err) {
     console.log('getAdvancedClassificationGPT Error', err)

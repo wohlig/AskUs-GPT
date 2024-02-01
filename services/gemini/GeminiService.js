@@ -57,7 +57,6 @@ class GeminiService {
   async getContentFromGPT (context, language, trends) {
     console.log('Sending News to GPT', language)
     try {
-      console.log(trends)
       let prompt = ''
       if (language == 'English') {
         prompt = `You are a helpful assistant. First give the summary, label it as "Summary:", then the headline, label it as "Headline:" then the tweet, label it as "Tweet:", then the tags, label it as "Tags:", then the bullet points, label it as "Bullets:", and finally the similarity scores, label them as "Similarities:".
@@ -87,16 +86,17 @@ class GeminiService {
         // safetySettings,
       })
       const response = result.response
+      console.log(response.text())
       const promptTokens = await model.countTokens(prompt)
       const completionTokens = await model.countTokens(response.text())
       return {
         classification: response.text(),
         totalTokens: {
-            prompt_tokens: promptTokens.totalTokens,
-            completion_tokens: completionTokens.totalTokens,
-            total_tokens: promptTokens.totalTokens + completionTokens.totalTokens
+          prompt_tokens: promptTokens.totalTokens,
+          completion_tokens: completionTokens.totalTokens,
+          total_tokens: promptTokens.totalTokens + completionTokens.totalTokens
         }
-    }
+      }
     } catch (error) {
       console.error('Error in getContentFromGPT', error)
       return error
@@ -135,25 +135,25 @@ class GeminiService {
         - Support: Stories that offer encouragement and assistance to affected individuals or communities.
         - Solidarity: News that unites people in shared understanding or support for a cause.`
 
-        const parts = [
-            { text: prompt }
-        ]
-        const result = await model.generateContent({
-            contents: [{ role: 'user', parts }],
-            generationConfig
-            // safetySettings,
-        })
-        const response = result.response
-        const promptTokens = await model.countTokens(prompt)
+      const parts = [
+        { text: prompt }
+      ]
+      const result = await model.generateContent({
+        contents: [{ role: 'user', parts }],
+        generationConfig
+        // safetySettings,
+      })
+      const response = result.response
+      const promptTokens = await model.countTokens(prompt)
       const completionTokens = await model.countTokens(response.text())
       return {
         classification: response.text(),
         totalTokens: {
-            prompt_tokens: promptTokens.totalTokens,
-            completion_tokens: completionTokens.totalTokens,
-            total_tokens: promptTokens.totalTokens + completionTokens.totalTokens
+          prompt_tokens: promptTokens.totalTokens,
+          completion_tokens: completionTokens.totalTokens,
+          total_tokens: promptTokens.totalTokens + completionTokens.totalTokens
         }
-    }
+      }
     } catch (error) {
       console.error('Error in getClassificationGPT', error)
       return error
@@ -181,11 +181,11 @@ class GeminiService {
       return {
         classification: response.text(),
         totalTokens: {
-            prompt_tokens: promptTokens.totalTokens,
-            completion_tokens: completionTokens.totalTokens,
-            total_tokens: promptTokens.totalTokens + completionTokens.totalTokens
+          prompt_tokens: promptTokens.totalTokens,
+          completion_tokens: completionTokens.totalTokens,
+          total_tokens: promptTokens.totalTokens + completionTokens.totalTokens
         }
-    }
+      }
     } catch (error) {
       console.error('getFullContentGPT', error)
       return error
