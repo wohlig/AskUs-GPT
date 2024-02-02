@@ -66,7 +66,7 @@ class GptService {
           {
             role: 'system',
             content:
-              'You are a helpful assistant. First give the summary, label it as "Summary:", then the headline, label it as "Headline:" then the tweet, label it as "Tweet:", then the tags, label it as "Tags:", then the bullet points, label it as "Bullets:", and finally the similarity scores, label them as "Similarities:".'
+              'You are a helpful assistant. First give the summary, label it as "Summary:", then the headline, label it as "Headline:", then the tags, label it as "Tags:", and finally the similarity scores, label them as "Similarities:".'
           },
           {
             role: 'user',
