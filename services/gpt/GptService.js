@@ -47,7 +47,7 @@ class GptService {
           {
             role: 'system',
             content:
-              'You are a helpful assistant. First give the summary, label it as "Summary:", then the headline, label it as "Headline:" then the tweet, label it as "Tweet:", then the tags, label it as "Tags:", then the bullet points, label it as "Bullets:", and finally the similarity scores, label them as "Similarities:".'
+            'You are a helpful assistant. First give the summary, label it as "Summary:", then the headline, label it as "Headline:" then the tweet, label it as "Tweet:", then the tags, label it as "Tags:", then the bullet points, label it as "Bullets:", then similarity scores, label them as "Similarities:" and finally suggested question and answer, label them as "SuggestedQnA:".'
           },
           {
             role: 'user',
@@ -58,7 +58,8 @@ class GptService {
           4. Create tags for the above article.
           5. Give the same summary created above in bullet points.
           6. Compare the news article provided above with each array from the trending tags provided below and then give a similarity score (no decimal scores) out of 10 for every array from the trending tags. A high similarity score means that the array from trending tags is highly related to the news article and a low similarity score means that the array from trending tags is not too related to the news article. Provide only the similarity scores in a single line removing any preceding serial numbers or letters.
-          ${trends}`
+          ${trends}
+          7. Create ${process.env.NUMBER_OF_SUGGESTION_QNA} suggested questions and their answers, label them as "SuggestedQnA".`
           }
         ]
       } else {
@@ -75,7 +76,8 @@ class GptService {
           2. Create a headline in under 20 words for the summary strictly in ${language} language.
           3. Create tags for the above article strictly in ${language} language.
           4. Compare the news article provided above with each array from the trending tags provided below and then give a similarity score (no decimal scores) out of 10 for every array from the trending tags. A high similarity score means that the array from trending tags is highly related to the news article and a low similarity score means that the array from trending tags is not too related to the news article. Provide only the similarity scores in a single line removing any preceding serial numbers or letters.
-          ${trends}`
+          ${trends}
+          5. Create ${process.env.NUMBER_OF_SUGGESTION_QNA} suggested questions and their answers strictly in ${language}, label them as "SuggestedQnA:".`
           }
         ]
       }
