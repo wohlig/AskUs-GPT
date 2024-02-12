@@ -72,7 +72,7 @@ class GptService {
           {
             role: 'user',
             content: `${context}
-          1. Create a summary of the above article strictly in ${language} language in the range of 60 words. It is very important for the summary to be exactly 60 words. Do not go over or under this length.
+          1. Provide a summary strictly in ${language} language of the key points from the article above. The summary should be 80 - 100 words in length. Focus on capturing the main ideas and key details in a clear and concise way. Summarize the essence of the article accurately regardless of its length.
           2. Create a headline in under 20 words for the summary strictly in ${language} language.
           3. Create tags for the above article strictly in ${language} language.
           4. Translate the trending tags ${trends} into ${language} and compare the news article provided above with each array from the trending tags provided below and then give a similarity score (no decimal scores) out of 10 for every array from the trending tags. A high similarity score means that the array from trending tags is highly related to the news article and a low similarity score means that the array from trending tags is not too related to the news article. Provide only the similarity scores in a single line removing any preceding serial numbers or letters.
