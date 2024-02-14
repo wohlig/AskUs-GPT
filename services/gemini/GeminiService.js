@@ -51,6 +51,16 @@ class GeminiService {
     const result = await chat.sendMessage(userInput)
     const response = result.response
     console.log(response.text())
+    const promptTokens = await model.countTokens(userInput)
+    const completionTokens = await model.countTokens(response.text())
+    return {
+      data: response.text(),
+      usage: {
+        prompt_tokens: promptTokens.totalTokens,
+        completion_tokens: completionTokens.totalTokens,
+        total_tokens: promptTokens.totalTokens + completionTokens.totalTokens
+      }
+    }
     return response.text()
   }
 
