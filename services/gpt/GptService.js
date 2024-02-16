@@ -9,7 +9,7 @@ class GptService {
   async getAnsFromGPT (context, question) {
     console.log('Sending Question to GPT')
     const response = await openai.createChatCompletion({
-      model: 'gpt-3.5-turbo',
+      model: 'gpt-3.5-turbo-0125',
       messages: [
         {
           role: 'system',
@@ -33,10 +33,10 @@ class GptService {
     return response.data
   }
 
-  async getContentFromGPT (context, language, type, trends, max_tokens = 1000, model = 'gpt-3.5-turbo-16k') {
+  async getContentFromGPT (context, language, type, trends, max_tokens = 1000, model = 'gpt-3.5-turbo-0125') {
     if (type == 'YouTube') {
       max_tokens = 5000,
-      model = 'gpt-3.5-turbo-16k'
+      model = 'gpt-3.5-turbo-0125'
     }
     console.log('Sending News to GPT', language)
     try {
@@ -115,7 +115,7 @@ class GptService {
         }
       ]
       const response = await openai.createChatCompletion({
-        model: 'gpt-3.5-turbo',
+        model: 'gpt-3.5-turbo-0125',
         messages: messages,
         temperature: 0,
         max_tokens: 1000,
@@ -172,7 +172,7 @@ class GptService {
         }
       ]
       const response = await openai.createChatCompletion({
-        model: 'gpt-3.5-turbo',
+        model: 'gpt-3.5-turbo-0125',
         messages: messages,
         temperature: 0,
         max_tokens: 1000,
@@ -190,7 +190,7 @@ class GptService {
   async chatGPTAns (context, question) {
     console.log('Sending Question to GPT')
     const response = await openai.createChatCompletion({
-      model: 'gpt-3.5-turbo',
+      model: 'gpt-3.5-turbo-0125',
       messages: [
         {
           role: 'system',
@@ -231,7 +231,7 @@ class GptService {
         }
       ]
       const response = await openai.createChatCompletion({
-        model: 'gpt-3.5-turbo-16k',
+        model: 'gpt-3.5-turbo-0125',
         messages: messages,
         temperature: 0,
         max_tokens: 5000,
