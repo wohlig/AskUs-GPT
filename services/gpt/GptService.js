@@ -50,11 +50,11 @@ class GptService {
         {
           role: 'user',
           content: `${context}
-        1. Provide a summary of the key points from the article above. The summary should be exactly 60 words in length. Focus on capturing the main ideas and key details in a clear and concise way. Ensure the full summary is 60 words, do not go over or under. Summarize the essence of the article accurately regardless of its length.
-        2. Create a headline in under 20 words for the summary.
-        3. Create a tweet for the news article.
-        4. Create tags for the above article.
-        5. Give the same summary created above in bullet points.
+        1. Provide a summary strictly in ${language} of the key points from the article above. The summary should be exactly around 80 - 100 words in length. Focus on capturing the main ideas and key details in a clear and concise way. Summarize the essence of the article accurately regardless of its length.
+        2. Create a headline strictly in ${language} in under 20 words for the summary.
+        3. Create a tweet strictly in ${language} for the news article.
+        4. Create tags strictly in ${language} for the above article.
+        5. Give the same summary created above in bullet points strictly in ${language}.
         6. Compare the news article provided above with each array from the trending tags provided below and then give a similarity score (no decimal scores) out of 10 for every array from the trending tags. A high similarity score means that the array from trending tags is highly related to the news article and a low similarity score means that the array from trending tags is not too related to the news article. Provide only the similarity scores in a single line removing any preceding serial numbers or letters.
         ${trends}`
         }
