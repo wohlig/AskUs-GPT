@@ -9,7 +9,7 @@ class GptService {
   async getAnsFromGPT (context, question) {
     console.log('Sending Question to GPT')
     const response = await openai.createChatCompletion({
-      model: 'gpt-3.5-turbo',
+      model: 'gpt-3.5-turbo-0125',
       messages: [
         {
           role: 'system',
@@ -33,54 +33,33 @@ class GptService {
     return response.data
   }
 
-  async getContentFromGPT (context, language, type, trends, trendsArrayLength, max_tokens = 1000, model = 'gpt-3.5-turbo-16k') {
+  async getContentFromGPT (context, language, type, trends, max_tokens = 1000, model = 'gpt-3.5-turbo-0125') {
     if (type == 'YouTube') {
-      max_tokens = 5000,
-      model = 'gpt-3.5-turbo-16k'
+      max_tokens = 2000,
+      model = 'gpt-3.5-turbo-0125'
     }
     console.log('Sending News to GPT', language)
     try {
       console.log(trends)
-      console.log(trendsArrayLength)
-      let messages
-      if (language === 'English') {
-        messages = [
-          {
-            role: 'system',
-            content:
-              'You are a helpful assistant. First give the summary, label it as "Summary:", then the headline, label it as "Headline:" then the tweet, label it as "Tweet:", then the tags, label it as "Tags:", then the bullet points, label it as "Bullets:", then similarity scores, label them as "Similarities:" and finally suggested question and answer, label them as "SuggestedQnA".'
-          },
-          {
-            role: 'user',
-            content: `${context}
-          1. Provide a summary of the key points from the article above. The summary should be exactly 60 words in length. Focus on capturing the main ideas and key details in a clear and concise way. Ensure the full summary is 60 words, do not go over or under. Summarize the essence of the article accurately regardless of its length.
-          2. Create a headline in under 20 words for the summary.
-          3. Create a tweet for the news article.
-          4. Create tags for the above article.
-          5. Give the same summary created above in bullet points.
-          6. Compare the news article provided above with each array from the trending tags provided below and then give a similarity score (no decimal scores) out of 10 for every array from the trending tags. A high similarity score means that the array from trending tags is highly related to the news article and a low similarity score means that the array from trending tags is not too related to the news article. Provide only the similarity scores in a single line removing any preceding serial numbers or letters. If ${trendsArrayLength} is 1, then provide only 1 similarity score
-          ${trends}
-          7. Create ${process.env.NUMBER_OF_SUGGESTION_QNA} suggested questions and their answers, label them as "SuggestedQnA".`
-          }
-        ]
-      } else {
-        messages = [
-          {
-            role: 'system',
-            content:
-              'You are a helpful assistant. First give the summary, label it as "Summary:", then the headline, label it as "Headline:" and finally the tags, label it as "Tags:".'
-          },
-          {
-            role: 'user',
-            content: `${context}
-          1. Create a summary of the above article strictly in ${language} language in the range of 60 words. It is very important for the summary to be exactly 60 words. Do not go over or under this length.
-          2. Create a headline in under 20 words for the summary strictly in ${language} language.
-          3. Create tags for the above article strictly in ${language} language.
-          4. Compare the news article provided above with each array from the trending tags provided below and then give a similarity score out of 10 for every array from the trending tags. A high similarity score means that the array from trending tags is highly related to the news article and a low similarity score means that the array from trending tags is not too related to the news article. Provide only the similarity scores in a single line removing any preceding serial numbers or letters.
-          ${trends}`
-          }
-        ]
-      }
+      const messages = [
+        {
+          role: 'system',
+          content:
+            'You are a helpful assistant. First give the summary, label it as "Summary:", then the headline, label it as "Headline:" then the tweet, label it as "Tweet:", then the tags, label it as "Tags:", then the bullet points, label it as "Bullets:", then similarity scores, label them as "Similarities:" and finally suggested question and answer, label them as "SuggestedQnA".'
+        },
+        {
+          role: 'user',
+          content: `${context}
+        1. Provide a summary of the key points from the article above strictly in ${language} language. The summary should be 80-100 words in length. Focus on capturing the main ideas and key details in a clear and concise way. Summarize the essence of the article accurately regardless of its length.
+        2. Create a headline in under 20 words for the summary strictly in ${language} language.
+        3. Create a tweet for the news article strictly in ${language} language.
+        4. Create tags for the above article strictly in ${language} language.
+        5. Give the same summary created above in bullet points strictly in ${language} language.
+        6. Compare the news article provided above with each array from the trending tags provided below and then give a similarity score (no decimal scores) out of 10 for every array from the trending tags. A high similarity score means that the array from trending tags is highly related to the news article and a low similarity score means that the array from trending tags is not too related to the news article. Provide only the similarity scores in a single line removing any preceding serial numbers or letters.
+        ${trends}
+        7. Create ${process.env.NUMBER_OF_SUGGESTION_QNA} suggested questions and their answers, label them as "SuggestedQnA".`
+        }
+      ]
       const response = await openai.createChatCompletion({
         model: model,
         messages: messages,
@@ -117,7 +96,7 @@ class GptService {
         }
       ]
       const response = await openai.createChatCompletion({
-        model: 'gpt-3.5-turbo',
+        model: 'gpt-3.5-turbo-0125',
         messages: messages,
         temperature: 0,
         max_tokens: 1000,
@@ -174,7 +153,7 @@ class GptService {
         }
       ]
       const response = await openai.createChatCompletion({
-        model: 'gpt-3.5-turbo',
+        model: 'gpt-3.5-turbo-0125',
         messages: messages,
         temperature: 0,
         max_tokens: 1000,
@@ -192,7 +171,7 @@ class GptService {
   async chatGPTAns (context, question) {
     console.log('Sending Question to GPT')
     const response = await openai.createChatCompletion({
-      model: 'gpt-3.5-turbo',
+      model: 'gpt-3.5-turbo-0125',
       messages: [
         {
           role: 'system',
@@ -233,10 +212,10 @@ class GptService {
         }
       ]
       const response = await openai.createChatCompletion({
-        model: 'gpt-3.5-turbo-16k',
+        model: 'gpt-3.5-turbo-0125',
         messages: messages,
         temperature: 0,
-        max_tokens: 5000,
+        max_tokens: 2000,
         top_p: 1,
         frequency_penalty: 0,
         presence_penalty: 0
