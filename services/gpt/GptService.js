@@ -33,7 +33,7 @@ class GptService {
     return response.data
   }
 
-  async getContentFromGPT (context, language, type, trends, max_tokens = 1000, model = 'gpt-3.5-turbo-0125') {
+  async getContentFromGPT (context, language, type, trends, max_tokens = 2000, model = 'gpt-3.5-turbo-0125') {
     if (type == 'YouTube') {
       max_tokens = 2000,
       model = 'gpt-3.5-turbo-0125'
@@ -45,7 +45,7 @@ class GptService {
         {
           role: 'system',
           content:
-            'You are a helpful assistant. First give the summary, label it as "Summary:", then the headline, label it as "Headline:" then the tweet, label it as "Tweet:", then the tags, label it as "Tags:", then the bullet points, label it as "Bullets:", then similarity scores, label them as "Similarities:" and finally suggested question and answer, label them as "SuggestedQnA:".'
+            'You are a helpful assistant. First give the summary, label it as "Summary:", then the headline, label it as "Headline:" then the tweet, label it as "Tweet:", then the tags, label it as "Tags:", then the bullet points, label it as "Bullets:", then similarity scores, label them as "Similarities:" and finally suggested question and answer, label them as "SuggestedQnA".'
         },
         {
           role: 'user',
