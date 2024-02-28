@@ -33,7 +33,7 @@ class GptService {
     return response.data
   }
 
-  async getContentFromGPT (context, language, type, trends, max_tokens = 1000, model = 'gpt-3.5-turbo-0125') {
+  async getContentFromGPT (context, language, type, trends, max_tokens = 2000, model = 'gpt-3.5-turbo-0125') {
     if (type == 'YouTube') {
       max_tokens = 2000,
       model = 'gpt-3.5-turbo-0125'
