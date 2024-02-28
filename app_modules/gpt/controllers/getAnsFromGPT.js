@@ -42,7 +42,7 @@ const validation = (req, res, next) => {
 }
 const getAnsFromGPT = async (req, res) => {
   try {
-    const result = await gptServices.getAnsFromGPT(req.body.context, req.body.question)
+    const result = await gptServices.getAnsFromGPT(req.body.context, req.body.question, req.body.language)
     res.sendJson({ type: __constants.RESPONSE_MESSAGES.SUCCESS, data: { data: result } })
   } catch (err) {
     console.log('getAnsFromGPT Error', err)
@@ -50,5 +50,5 @@ const getAnsFromGPT = async (req, res) => {
   }
 }
 
-router.post('/getAnsFromGPT', cache.route(600), validation, getAnsFromGPT)
+router.post('/getAnsFromGPT', validation, getAnsFromGPT)
 module.exports = router

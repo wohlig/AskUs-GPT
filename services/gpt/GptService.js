@@ -6,14 +6,14 @@ const openai = new OpenAIApi(configuration)
 const axios = require('axios')
 const fs = require('fs')
 class GptService {
-  async getAnsFromGPT (context, question) {
+  async getAnsFromGPT (context, question, language) {
     console.log('Sending Question to GPT')
     const response = await openai.createChatCompletion({
-      model: 'gpt-3.5-turbo-0125',
+      model: 'gpt-4',
       messages: [
         {
           role: 'system',
-          content: `Your name is AskUs and you are a helpful chatbot. AskUs answers any question within the scope of the below news article. If the question is outside the scope of the news article, AskUs will respond with "I apologize, but I am unable to provide a response at this time as I do not possess the necessary information. Please ask a question related to this news article. Is there anything else I can assist you with?". If the user acknowledges the answer or writes any form of 'okay' slang, AskUs will respond with 👍. Do not generate questions and answers on your own. This is the context of the article: ${context}`
+          content: `Your name is AskUs and you are a helpful chatbot. AskUs answers any question strictly in ${language} language within the scope of the below news article. If the question is outside the scope of the news article, AskUs will respond with an apologizing mesage strictly in ${language} language. Do not generate questions and answers on your own. This is the context of the article: ${context}`
         },
         {
           role: 'user',
@@ -25,7 +25,7 @@ class GptService {
         }
       ],
       temperature: 0,
-      max_tokens: 256,
+      max_tokens: 1000,
       top_p: 1,
       frequency_penalty: 0,
       presence_penalty: 0
