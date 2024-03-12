@@ -36,7 +36,7 @@ class GptService {
   async getContentFromGPT (context, language, type, trends, max_tokens = 2000, model = 'gpt-3.5-turbo-0125') {
     if (type == 'YouTube') {
       max_tokens = 3000,
-      model = 'gpt-3.5-turbo-16k'
+      model = 'gpt-3.5-turbo-0125'
     }
     console.log('Sending News to GPT', language)
     try {
