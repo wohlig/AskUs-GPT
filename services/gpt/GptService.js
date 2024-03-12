@@ -35,7 +35,7 @@ class GptService {
 
   async getContentFromGPT (context, language, type, trends, max_tokens = 2000, model = 'gpt-3.5-turbo-0125') {
     if (type == 'YouTube') {
-      max_tokens = 2000,
+      max_tokens = 3000,
       model = 'gpt-3.5-turbo-0125'
     }
     console.log('Sending News to GPT', language)
@@ -196,14 +196,14 @@ class GptService {
     return response.data
   }
 
-  async getFullContentGPT (transcript) {
+  async getFullContentGPT (transcript, language) {
     console.log('Generating full content from GPT')
     try {
       const messages = [
         {
           role: 'system',
           content:
-            'You are a helpful assistant. Give the Full Content and label it as "Full Content:".'
+            `You are a helpful assistant. Give the Full Content in ${language} language and label it as "Full Content:".`
         },
         {
           role: 'user',

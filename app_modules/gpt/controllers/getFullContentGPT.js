@@ -38,7 +38,7 @@ const validation = (req, res, next) => {
 }
 const getFullContentGPT = async (req, res) => {
   try {
-    const result = await GptService.getFullContentGPT(req.body.transcript)
+    const result = await GptService.getFullContentGPT(req.body.transcript, req.body.language)
     res.sendJson({
       type: __constants.RESPONSE_MESSAGES.SUCCESS,
       data: { gpt: result }
