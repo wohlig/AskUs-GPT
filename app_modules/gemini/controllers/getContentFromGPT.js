@@ -3,7 +3,7 @@ const router = express.Router()
 const __constants = require('../../../config/constants')
 const validationOfAPI = require('../../../middlewares/validation')
 // const cache = require('../../../middlewares/requestCacheMiddleware')
-const GptService = require('../../../services/gpt/GptService')
+const geminiServices = require('../../../services/gemini/GeminiService')
 
 /**
  * @namespace -GPT-MODULE-
@@ -27,7 +27,7 @@ const validationSchema = {
   type: 'object',
   required: true,
   properties: {
-    transcript: {
+    context: {
       type: 'string',
       required: true
     }
@@ -36,12 +36,13 @@ const validationSchema = {
 const validation = (req, res, next) => {
   return validationOfAPI(req, res, next, validationSchema, 'body')
 }
-const getFullContentGPT = async (req, res) => {
+const getNewsFromGPT = async (req, res) => {
   try {
-    const result = await GptService.getFullContentGPT(req.body.transcript, req.body.language)
+    const result = await geminiServices.getContentFromGPT(req.body.context, req.body.lang, req.body.trends)
+    console.log('result', result)
     res.sendJson({
       type: __constants.RESPONSE_MESSAGES.SUCCESS,
-      data: { gpt: result }
+      data: { gpt: result.classification, usage: result.totalTokens }
     })
   } catch (err) {
     console.log('getContentFromGPT Error', err)
@@ -52,5 +53,5 @@ const getFullContentGPT = async (req, res) => {
   }
 }
 
-router.post('/getFullContentGPT', validation, getFullContentGPT)
+router.post('/getNewsFromGPT', validation, getNewsFromGPT)
 module.exports = router

@@ -3,7 +3,7 @@ const router = express.Router()
 const __constants = require('../../../config/constants')
 const validationOfAPI = require('../../../middlewares/validation')
 // const cache = require('../../../middlewares/requestCacheMiddleware')
-const GptService = require('../../../services/gpt/GptService')
+const geminiServices = require('../../../services/gemini/GeminiService')
 
 /**
  * @namespace -GPT-MODULE-
@@ -38,10 +38,10 @@ const validation = (req, res, next) => {
 }
 const getFullContentGPT = async (req, res) => {
   try {
-    const result = await GptService.getFullContentGPT(req.body.transcript, req.body.language)
+    const result = await geminiServices.getFullContentGPT(req.body.transcript)
     res.sendJson({
       type: __constants.RESPONSE_MESSAGES.SUCCESS,
-      data: { gpt: result }
+      data: { gpt: result.classification, usage: result.totalTokens }
     })
   } catch (err) {
     console.log('getContentFromGPT Error', err)
