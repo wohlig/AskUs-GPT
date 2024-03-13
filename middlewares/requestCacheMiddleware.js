@@ -4,7 +4,16 @@ const set = async (key, value, expirySec) => {
   try {
     await __db.redis.setex(key, value, expirySec)
   } catch (err) {
-    console.log('Error in setting the redis key for cache:: ', err)
+    console.log('Error in setting the redis key for cache with ex:: ', err)
+    throw new Error(err)
+  }
+}
+
+const setWithoutEx = async (key, value) => {
+  try {
+    await __db.redis.set(key, value)
+  } catch (err) {
+    console.log('Error in setting the redis key for cache without ex:: ', err)
     throw new Error(err)
   }
 }
@@ -47,5 +56,7 @@ const cache = (expiryInSec) => {
 
 module.exports = {
   route: cache,
-  set: set
+  set: set,
+  get: get,
+  setWithoutEx: setWithoutEx
 }
