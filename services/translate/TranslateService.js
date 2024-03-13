@@ -1,9 +1,9 @@
 const cache = require("../../middlewares/requestCacheMiddleware");
 const { TranslationServiceClient } = require("@google-cloud/translate");
-if (process.env.GOOGLE_APPLICATION_CREDENTIALS) {
+if (process.env.GOOGLE_TRANSLATE_CREDENTIALS) {
   try {
       var translateKey = JSON.parse(
-          process.env.GOOGLE_APPLICATION_CREDENTIALS
+          process.env.GOOGLE_TRANSLATE_CREDENTIALS
       )
   } catch (error) {
       console.error("Error reading the JSON file:", error)
