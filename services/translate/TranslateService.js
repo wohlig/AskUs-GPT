@@ -73,6 +73,12 @@ class TranslateService {
       predictionObj.prediction.travel,
       lang
     );
+    const healthText = await this.getTranslation('Health', lang)
+    const emotionsText = await this.getTranslation('Emotions', lang)
+    const professionText = await this.getTranslation('Profession', lang)
+    const luckText = await this.getTranslation('Luck', lang)
+    const personal_lifeText = await this.getTranslation('Personal Life', lang)
+    const travelText = await this.getTranslation('Travel', lang)
     const finalTranslatedPredicitonObj = {
       health: health,
       emotions: emotions,
@@ -81,11 +87,20 @@ class TranslateService {
       personal_life: personal_life,
       travel: travel,
     };
+    const translatedTitles = [
+      healthText,
+      emotionsText,
+      professionText,
+      luckText,
+      personal_lifeText,
+      travelText
+    ]
     predictionObj.birth_moon_sign = birth_moon_sign;
     predictionObj.birth_moon_nakshatra = birth_moon_nakshatra;
     predictionObj.name = name;
     predictionObj.sunSign = sunsign;
     predictionObj.prediction = finalTranslatedPredicitonObj;
+    predictionObj.translatedTitles = translatedTitles
     return predictionObj;
   }
 }
