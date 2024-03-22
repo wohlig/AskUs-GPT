@@ -138,7 +138,7 @@ class TranslateService {
     predictionObj.birth_moon_sign = birth_moon_sign;
     predictionObj.birth_moon_nakshatra = birth_moon_nakshatra;
     predictionObj.name = name;
-    predictionObj.sunSign = sunsign;
+    predictionObj.sunSignName = sunsign;
     predictionObj.prediction = finalTranslatedPredicitonObj;
     predictionObj.translatedTitles = translatedTitles;
     let trandslatedPredictionDate = prediction_date
