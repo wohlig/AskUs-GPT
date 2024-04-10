@@ -41,7 +41,7 @@ const removeCombinedNews = async (req, res) => {
     const result = await gptServices.removeCombinedNews(req.body.fullContent)
     res.sendJson({ type: __constants.RESPONSE_MESSAGES.SUCCESS, data: { data: result } })
   } catch (err) {
-    console.log('getAnsFromGPT Error', err)
+    console.log('removeCombinedNews Error', err)
     return res.sendJson({ type: err.type || __constants.RESPONSE_MESSAGES.SERVER_ERROR, err: err.err || err })
   }
 }
