@@ -6,6 +6,32 @@ const openai = new OpenAIApi(configuration)
 const axios = require('axios')
 const fs = require('fs')
 class GptService {
+  async removeCombinedNews (fullContent) {
+    console.log('Removing combined news')
+    const response = await openai.createChatCompletion({
+      model: 'gpt-3.5-turbo-0125',
+      messages: [
+        {
+          role: 'system',
+          content: `Analyze the given text and determine if it is a news digest that summarizes multiple news stories. Look for introductory phrases indicating it is covering a compilation of recent news, followed by a list or summary of distinct news items. Provide a clear 'Yes' or 'No' answer.`
+        },
+        {
+          role: 'user',
+          content: `This is the content of the article: ${fullContent}`
+        },
+        {
+          role: 'assistant',
+          content: 'Answer: '
+        }
+      ],
+      temperature: 0,
+      max_tokens: 256,
+      top_p: 1,
+      frequency_penalty: 0,
+      presence_penalty: 0
+    })
+    return response.data
+  }
   async getAnsFromGPT (context, question) {
     console.log('Sending Question to GPT')
     const response = await openai.createChatCompletion({
