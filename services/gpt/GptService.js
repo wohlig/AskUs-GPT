@@ -1,80 +1,91 @@
-const { Configuration, OpenAIApi } = require('openai')
+const { Configuration, OpenAIApi } = require("openai");
 const configuration = new Configuration({
-  apiKey: process.env.OPENAI_API_KEY
-})
-const openai = new OpenAIApi(configuration)
-const axios = require('axios')
-const fs = require('fs')
+  apiKey: process.env.OPENAI_API_KEY,
+});
+const openai = new OpenAIApi(configuration);
+const axios = require("axios");
+const fs = require("fs");
 class GptService {
-  async removeCombinedNews (fullContent) {
-    console.log('Removing combined news')
+  async removeCombinedNews(fullContent) {
+    console.log("Removing combined news");
     const response = await openai.createChatCompletion({
-      model: 'gpt-3.5-turbo-0125',
+      model: "gpt-3.5-turbo-0125",
       messages: [
         {
-          role: 'system',
-          content: `Analyze the given text and determine if it is a news digest that summarizes multiple news stories. Look for introductory phrases indicating it is covering a compilation of recent news, followed by a list or summary of distinct news items. Provide a clear 'Yes' or 'No' answer.`
+          messages: [
+            {
+              role: "system",
+              content:
+                "Analyze the text provided and determine if it constitutes a news digest. A news digest is characterized by an introductory statement that indicates it is a compilation of recent news, followed by summaries of multiple, distinct, and unrelated news stories. Assess the presence of an introductory phrase that suggests a news compilation and verify if there are at least two summaries of news items that are not topically related to each other. Respond with 'Yes' if the text meets these criteria (i.e., it includes multiple unrelated news summaries); otherwise, respond with 'No' (i.e., it covers a single topic or related topics). Provide a clear 'Yes' or 'No' answer based on these criteria.",
+            },
+            {
+              role: "user",
+              content: "This is the content of the article: ${fullContent}",
+            },
+            {
+              role: "assistant",
+              content: "Answer: ",
+            },
+          ],
         },
-        {
-          role: 'user',
-          content: `This is the content of the article: ${fullContent}`
-        },
-        {
-          role: 'assistant',
-          content: 'Answer: '
-        }
       ],
       temperature: 0,
       max_tokens: 256,
       top_p: 1,
       frequency_penalty: 0,
-      presence_penalty: 0
-    })
-    return response.data
+      presence_penalty: 0,
+    });
+    return response.data;
   }
-  async getAnsFromGPT (context, question) {
-    console.log('Sending Question to GPT')
+  async getAnsFromGPT(context, question) {
+    console.log("Sending Question to GPT");
     const response = await openai.createChatCompletion({
-      model: 'gpt-3.5-turbo-0125',
+      model: "gpt-3.5-turbo-0125",
       messages: [
         {
-          role: 'system',
-          content: `Your name is AskUs and you are a helpful chatbot. AskUs answers any question within the scope of the below news article. If the question is outside the scope of the news article, AskUs will respond with "I apologize, but I am unable to provide a response at this time as I do not possess the necessary information. Please ask a question related to this news article. Is there anything else I can assist you with?". If the user acknowledges the answer or writes any form of 'okay' slang, AskUs will respond with 👍. Do not generate questions and answers on your own. This is the context of the article: ${context}`
+          role: "system",
+          content: `Your name is AskUs and you are a helpful chatbot. AskUs answers any question within the scope of the below news article. If the question is outside the scope of the news article, AskUs will respond with "I apologize, but I am unable to provide a response at this time as I do not possess the necessary information. Please ask a question related to this news article. Is there anything else I can assist you with?". If the user acknowledges the answer or writes any form of 'okay' slang, AskUs will respond with 👍. Do not generate questions and answers on your own. This is the context of the article: ${context}`,
         },
         {
-          role: 'user',
-          content: `Question: ${question}`
+          role: "user",
+          content: `Question: ${question}`,
         },
         {
-          role: 'assistant',
-          content: 'Answer: '
-        }
+          role: "assistant",
+          content: "Answer: ",
+        },
       ],
       temperature: 0,
       max_tokens: 256,
       top_p: 1,
       frequency_penalty: 0,
-      presence_penalty: 0
-    })
-    return response.data
+      presence_penalty: 0,
+    });
+    return response.data;
   }
 
-  async getContentFromGPT (context, language, type, trends, max_tokens = 2000, model = 'gpt-3.5-turbo-0125') {
-    if (type == 'YouTube') {
-      max_tokens = 3000,
-      model = 'gpt-3.5-turbo-0125'
+  async getContentFromGPT(
+    context,
+    language,
+    type,
+    trends,
+    max_tokens = 2000,
+    model = "gpt-3.5-turbo-0125"
+  ) {
+    if (type == "YouTube") {
+      (max_tokens = 3000), (model = "gpt-3.5-turbo-0125");
     }
-    console.log('Sending News to GPT', language)
+    console.log("Sending News to GPT", language);
     try {
-      console.log(trends)
+      console.log(trends);
       const messages = [
         {
-          role: 'system',
+          role: "system",
           content:
-            'You are a helpful assistant. First give the summary, label it as "Summary:", then the headline, label it as "Headline:" then the tweet, label it as "Tweet:", then the tags, label it as "Tags:", then the bullet points, label it as "Bullets:", then similarity scores, label them as "Similarities:" and finally suggested question and answer, label them as "SuggestedQnA".'
+            'You are a helpful assistant. First give the summary, label it as "Summary:", then the headline, label it as "Headline:" then the tweet, label it as "Tweet:", then the tags, label it as "Tags:", then the bullet points, label it as "Bullets:", then similarity scores, label them as "Similarities:" and finally suggested question and answer, label them as "SuggestedQnA".',
         },
         {
-          role: 'user',
+          role: "user",
           content: `${context}
         1. Provide a summary of the key points from the article above strictly in ${language} language. The summary should be 80-100 words in length. Focus on capturing the main ideas and key details in a clear and concise way. Summarize the essence of the article accurately regardless of its length.
         2. Create a headline in under 20 words for the summary strictly in ${language} language.
@@ -83,9 +94,9 @@ class GptService {
         5. Give the same summary created above in bullet points strictly in ${language} language.
         6. Compare the news article provided above with each array from the trending tags provided below and then give a similarity score (no decimal scores) out of 10 for every array from the trending tags. A high similarity score means that the array from trending tags is highly related to the news article and a low similarity score means that the array from trending tags is not too related to the news article. Provide only the similarity scores in a single line removing any preceding serial numbers or letters.
         ${trends}
-        7. Create ${process.env.NUMBER_OF_SUGGESTION_QNA} suggested questions and their answers, label them as "SuggestedQnA".`
-        }
-      ]
+        7. Create ${process.env.NUMBER_OF_SUGGESTION_QNA} suggested questions and their answers, label them as "SuggestedQnA".`,
+        },
+      ];
       const response = await openai.createChatCompletion({
         model: model,
         messages: messages,
@@ -93,61 +104,61 @@ class GptService {
         max_tokens: max_tokens,
         top_p: 1,
         frequency_penalty: 0,
-        presence_penalty: 0
-      })
-      console.log(response.data.choices[0].message)
-      return response.data
+        presence_penalty: 0,
+      });
+      console.log(response.data.choices[0].message);
+      return response.data;
     } catch (error) {
-      console.error('Error in getContentFromGPT', error)
-      return error
+      console.error("Error in getContentFromGPT", error);
+      return error;
     }
   }
 
-  async getClassificationGPT (summary, headline, updatedCategories) {
-    console.log('Sending Summary & Headline to GPT')
+  async getClassificationGPT(summary, headline, updatedCategories) {
+    console.log("Sending Summary & Headline to GPT");
     try {
       const messages = [
         {
-          role: 'system',
+          role: "system",
           content:
-            'You are a helpful assistant. First give the categories, label it as "Categories:" and finally the Sentiment, label it as "Sentiment:".'
+            'You are a helpful assistant. First give the categories, label it as "Categories:" and finally the Sentiment, label it as "Sentiment:".',
         },
         {
-          role: 'user',
+          role: "user",
           content: `Summary: ${summary}
           Headline: ${headline}
         1. Analyze the provided summary and headline and categorize it using the following predefined categories. Each article may have multiple assigned categories, but ensure that all assigned categories are selected from the list below. Do not include any new categories that are not part of the provided list. The category 'nation' provided below pertains to news about India. The category 'advertisement' provided below pertains to any news that promotes the sale, discounts, features, price of any product be it a car, or a technology device, etc. Also, news related to games will come under 'advertisement' category. Provide only the category names in lowercase format and in a single line, removing any preceding numbers.
         ${updatedCategories}
-        2. Analyse the above summary and headline and return the sentiment of that article. The sentiments you possess are [Positive, Negative, Neutral]. Give the answer in 1 word only.`
-        }
-      ]
+        2. Analyse the above summary and headline and return the sentiment of that article. The sentiments you possess are [Positive, Negative, Neutral]. Give the answer in 1 word only.`,
+        },
+      ];
       const response = await openai.createChatCompletion({
-        model: 'gpt-3.5-turbo-0125',
+        model: "gpt-3.5-turbo-0125",
         messages: messages,
         temperature: 0,
         max_tokens: 1000,
         top_p: 1,
         frequency_penalty: 0,
-        presence_penalty: 0
-      })
-      return response.data
+        presence_penalty: 0,
+      });
+      return response.data;
     } catch (error) {
-      console.error('Error in getClassificationGPT', error)
-      return error
+      console.error("Error in getClassificationGPT", error);
+      return error;
     }
   }
 
-  async getAdvancedClassificationGPT (summary, headline, updatedCategories) {
-    console.log('Sending Summary & Headline to GPT')
+  async getAdvancedClassificationGPT(summary, headline, updatedCategories) {
+    console.log("Sending Summary & Headline to GPT");
     try {
       const messages = [
         {
-          role: 'system',
+          role: "system",
           content:
-            'You are a helpful assistant. First give the categories, label it as "Categories:", then the sentiment, label it as "Sentiment:" and finally the Advanced Sentiment, label it as "AdvancedSentiment:".'
+            'You are a helpful assistant. First give the categories, label it as "Categories:", then the sentiment, label it as "Sentiment:" and finally the Advanced Sentiment, label it as "AdvancedSentiment:".',
         },
         {
-          role: 'user',
+          role: "user",
           content: `Summary: ${summary}
           Headline: ${headline}
         1. Analyze the provided summary and headline and categorize it using the following predefined categories. Each article may have multiple assigned categories, but ensure that all assigned categories are selected from the list below. Do not include any new categories that are not part of the provided list. The category 'nation' provided below pertains to news about India. The category 'advertisement' provided below pertains to any news that promotes the sale, discounts, features, price of any product be it a car, or a technology device, etc. Also, news related to games will come under 'advertisement' category. Provide only the category names in lowercase format and in a single line, removing any preceding numbers.
@@ -175,98 +186,96 @@ class GptService {
         - Compassion: News expressing empathy for those facing hardships or suffering.
         - Support: Stories that offer encouragement and assistance to affected individuals or communities.
         - Solidarity: News that unites people in shared understanding or support for a cause.
-        `
-        }
-      ]
+        `,
+        },
+      ];
       const response = await openai.createChatCompletion({
-        model: 'gpt-3.5-turbo-0125',
+        model: "gpt-3.5-turbo-0125",
         messages: messages,
         temperature: 0,
         max_tokens: 1000,
         top_p: 1,
         frequency_penalty: 0,
-        presence_penalty: 0
-      })
-      return response.data
+        presence_penalty: 0,
+      });
+      return response.data;
     } catch (error) {
-      console.error('Error in getClassificationGPT', error)
-      return error
+      console.error("Error in getClassificationGPT", error);
+      return error;
     }
   }
 
-  async chatGPTAns (context, question) {
-    console.log('Sending Question to GPT')
+  async chatGPTAns(context, question) {
+    console.log("Sending Question to GPT");
     const response = await openai.createChatCompletion({
-      model: 'gpt-3.5-turbo-0125',
+      model: "gpt-3.5-turbo-0125",
       messages: [
         {
-          role: 'system',
-          content: 'Answer the question based on the context below'
+          role: "system",
+          content: "Answer the question based on the context below",
         },
         {
-          role: 'user',
+          role: "user",
           content: `Context: ${context}
-                    Question: ${question}`
+                    Question: ${question}`,
         },
         {
-          role: 'assistant',
-          content: 'Answer: '
-        }
+          role: "assistant",
+          content: "Answer: ",
+        },
       ],
       temperature: 0,
       max_tokens: 256,
       top_p: 1,
       frequency_penalty: 0,
-      presence_penalty: 0
-    })
-    return response.data
+      presence_penalty: 0,
+    });
+    return response.data;
   }
 
-  async getFullContentGPT (transcript, language) {
-    console.log('Generating full content from GPT')
+  async getFullContentGPT(transcript, language) {
+    console.log("Generating full content from GPT");
     try {
       const messages = [
         {
-          role: 'system',
-          content:
-            `You are a helpful assistant. Give the Full Content in ${language} language and label it as "Full Content:".`
+          role: "system",
+          content: `You are a helpful assistant. Give the Full Content in ${language} language and label it as "Full Content:".`,
         },
         {
-          role: 'user',
+          role: "user",
           content: `${transcript}
-          Generate a news article for the above content`
-        }
-      ]
+          Generate a news article for the above content`,
+        },
+      ];
       const response = await openai.createChatCompletion({
-        model: 'gpt-3.5-turbo-0125',
+        model: "gpt-3.5-turbo-0125",
         messages: messages,
         temperature: 0,
         max_tokens: 2000,
         top_p: 1,
         frequency_penalty: 0,
-        presence_penalty: 0
-      })
-      return response.data
+        presence_penalty: 0,
+      });
+      return response.data;
     } catch (error) {
-      console.error('getFullContentGPT', error)
-      return error
+      console.error("getFullContentGPT", error);
+      return error;
     }
   }
 
-  async adDetectorFineTunedModel (news) {
+  async adDetectorFineTunedModel(news) {
     try {
       const messages = [
         {
-          role: 'system',
-          content:
-            'You classify articles into news and ads'
+          role: "system",
+          content: "You classify articles into news and ads",
         },
         {
-          role: 'user',
-          content: `Is this article an ad? Title: ${news.headline}, Article: ${news.summary}?`
-        }
-      ]
-      console.log('Sending News to GPT', messages)
+          role: "user",
+          content: `Is this article an ad? Title: ${news.headline}, Article: ${news.summary}?`,
+        },
+      ];
+      console.log("Sending News to GPT", messages);
       const fineTunedModel = await openai.createChatCompletion({
         model: process.env.AD_DETECTOR_FINE_TUNED_MODEL_ID,
         messages: messages,
@@ -274,13 +283,13 @@ class GptService {
         max_tokens: 1000,
         top_p: 1,
         frequency_penalty: 0,
-        presence_penalty: 0
-      })
-      return fineTunedModel.data
+        presence_penalty: 0,
+      });
+      return fineTunedModel.data;
     } catch (error) {
-      console.error('Error in fineTunedModel', error)
+      console.error("Error in fineTunedModel", error);
     }
   }
 }
 
-module.exports = new GptService()
+module.exports = new GptService();
