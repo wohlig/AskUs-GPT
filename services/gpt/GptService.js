@@ -12,21 +12,17 @@ class GptService {
       model: "gpt-3.5-turbo-0125",
       messages: [
         {
-          messages: [
-            {
-              role: "system",
-              content:
-                "Analyze the text provided and determine if it constitutes a news digest. A news digest is characterized by an introductory statement that indicates it is a compilation of recent news, followed by summaries of multiple, distinct, and unrelated news stories. Assess the presence of an introductory phrase that suggests a news compilation and verify if there are at least two summaries of news items that are not topically related to each other. Respond with 'Yes' if the text meets these criteria (i.e., it includes multiple unrelated news summaries); otherwise, respond with 'No' (i.e., it covers a single topic or related topics). Provide a clear 'Yes' or 'No' answer based on these criteria.",
-            },
-            {
-              role: "user",
-              content: "This is the content of the article: ${fullContent}",
-            },
-            {
-              role: "assistant",
-              content: "Answer: ",
-            },
-          ],
+          role: "system",
+          content:
+            "Analyze the text provided and determine if it constitutes a news digest. A news digest is characterized by an introductory statement that indicates it is a compilation of recent news, followed by summaries of multiple, distinct, and unrelated news stories. Assess the presence of an introductory phrase that suggests a news compilation and verify if there are at least two summaries of news items that are not topically related to each other. Respond with 'Yes' if the text meets these criteria (i.e., it includes multiple unrelated news summaries); otherwise, respond with 'No' (i.e., it covers a single topic or related topics). Provide a clear 'Yes' or 'No' answer based on these criteria.",
+        },
+        {
+          role: "user",
+          content: "This is the content of the article: ${fullContent}",
+        },
+        {
+          role: "assistant",
+          content: "Answer: ",
         },
       ],
       temperature: 0,
