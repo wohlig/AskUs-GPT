@@ -6,7 +6,7 @@ const recommendClient = algoliarecommend(process.env.ALGOLIA_APP_ID, process.env
 )
 
 class AlgoliaService {
-  async searchQueryAlgolia (searchData, pageNo, language, id, blockedSources, categories, isVideo, viewedNews) {
+  async searchQueryAlgolia (searchData, pageNo, language, id, blockedSources, categories, isVideo, viewedNews, todayNews) {
     let newIndex
     if (language === undefined || language === 'English') {
       newIndex = client.initIndex('news')
@@ -39,6 +39,10 @@ class AlgoliaService {
       }
       viewedFilters = viewedFilters.concat(')')
       filters = filters.concat(viewedFilters)
+      if(todayNews) {
+        const todayTimestamp = Math.floor(Date.now() / 1000)
+        filters = filters.concat(` AND publishTime > ${todayTimestamp - (24 * 60 * 60)}`)
+      }
       console.log("FILTERSSSSS", filters)
       news = await newIndex.search(searchData, {
         enablePersonalization: true,
