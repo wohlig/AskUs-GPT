@@ -18,7 +18,7 @@ class GptService {
         },
         {
           role: "user",
-          content: "This is the content of the article: ${fullContent}",
+          content: `This is the content of the article: ${fullContent}`,
         },
         {
           role: "assistant",
