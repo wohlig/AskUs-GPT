@@ -14,7 +14,7 @@ class GptService {
         {
           role: "system",
           content:
-            "Analyze the article provided and determine if it contains two or more multiple, distinct, or unrelated news stories in a single article. Respond with 'Yes' if the text meets these criteria (i.e., it includes multiple unrelated news summaries); otherwise, respond with 'No' (i.e., it covers a single topic or related topics). Provide a clear 'Yes' or 'No' answer based on these criteria.",
+            "Analyze the text provided and determine if it constitutes a news digest. A news digest is characterized by an introductory statement that indicates it is a compilation of recent news, followed by summaries of multiple, distinct, and unrelated news stories. Assess the presence of an introductory phrase that suggests a news compilation and verify if there are at least two summaries of news items that are not topically related to each other. Respond with 'Yes' if the text meets these criteria (i.e., it includes multiple unrelated news summaries); otherwise, respond with 'No' (i.e., it covers a single topic or related topics). Provide a clear 'Yes' or 'No' answer based on these criteria.",
         },
         {
           role: "user",
