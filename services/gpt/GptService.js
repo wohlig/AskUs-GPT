@@ -1,14 +1,14 @@
-const { Configuration, OpenAIApi } = require('openai')
-const configuration = new Configuration({
-  apiKey: process.env.OPENAI_API_KEY
+const OpenAI = require("openai");
+const openai = new OpenAI({
+    apiKey: process.env.OPENAI_API_KEY
 })
-const openai = new OpenAIApi(configuration)
+
 const axios = require('axios')
 const fs = require('fs')
 class GptService {
   async removeCombinedNews (fullContent) {
     console.log('Removing combined news')
-    const response = await openai.createChatCompletion({
+    const response = await openai.chat.completions.create({
       model: 'gpt-3.5-turbo-0125',
       messages: [
         {
@@ -30,11 +30,12 @@ class GptService {
       frequency_penalty: 0,
       presence_penalty: 0
     })
-    return response.data
+    return response;
   }
+
   async getAnsFromGPT (context, question) {
     console.log('Sending Question to GPT')
-    const response = await openai.createChatCompletion({
+    const response = await openai.chat.completions.create({
       model: 'gpt-3.5-turbo-0125',
       messages: [
         {
@@ -56,7 +57,7 @@ class GptService {
       frequency_penalty: 0,
       presence_penalty: 0
     })
-    return response.data
+    return response;
   }
 
   async getContentFromGPT (context, language, type, trends, max_tokens = 2000, model = 'gpt-3.5-turbo-0125') {
@@ -86,7 +87,7 @@ class GptService {
         7. Create ${process.env.NUMBER_OF_SUGGESTION_QNA} suggested questions and their answers, label them as "SuggestedQnA".`
         }
       ]
-      const response = await openai.createChatCompletion({
+      const response = await openai.chat.completions.create({
         model: model,
         messages: messages,
         temperature: 0,
@@ -95,8 +96,8 @@ class GptService {
         frequency_penalty: 0,
         presence_penalty: 0
       })
-      console.log(response.data.choices[0].message)
-      return response.data
+      console.log(response.choices[0].message)
+      return response;
     } catch (error) {
       console.error('Error in getContentFromGPT', error)
       return error
@@ -121,7 +122,7 @@ class GptService {
         2. Analyse the above summary and headline and return the sentiment of that article. The sentiments you possess are [Positive, Negative, Neutral]. Give the answer in 1 word only.`
         }
       ]
-      const response = await openai.createChatCompletion({
+      const response = await openai.chat.completions.create({
         model: 'gpt-3.5-turbo-0125',
         messages: messages,
         temperature: 0,
@@ -130,7 +131,7 @@ class GptService {
         frequency_penalty: 0,
         presence_penalty: 0
       })
-      return response.data
+      return response;
     } catch (error) {
       console.error('Error in getClassificationGPT', error)
       return error
@@ -178,7 +179,7 @@ class GptService {
         `
         }
       ]
-      const response = await openai.createChatCompletion({
+      const response = await openai.chat.completions.create({
         model: 'gpt-3.5-turbo-0125',
         messages: messages,
         temperature: 0,
@@ -187,7 +188,7 @@ class GptService {
         frequency_penalty: 0,
         presence_penalty: 0
       })
-      return response.data
+      return response;
     } catch (error) {
       console.error('Error in getClassificationGPT', error)
       return error
@@ -196,7 +197,7 @@ class GptService {
 
   async chatGPTAns (context, question) {
     console.log('Sending Question to GPT')
-    const response = await openai.createChatCompletion({
+    const response = await openai.chat.completions.create({
       model: 'gpt-3.5-turbo-0125',
       messages: [
         {
@@ -219,7 +220,7 @@ class GptService {
       frequency_penalty: 0,
       presence_penalty: 0
     })
-    return response.data
+    return response;
   }
 
   async getFullContentGPT (transcript, language) {
@@ -237,7 +238,7 @@ class GptService {
           Generate a news article for the above content`
         }
       ]
-      const response = await openai.createChatCompletion({
+      const response = await openai.chat.completions.create({
         model: 'gpt-3.5-turbo-0125',
         messages: messages,
         temperature: 0,
@@ -246,7 +247,7 @@ class GptService {
         frequency_penalty: 0,
         presence_penalty: 0
       })
-      return response.data
+      return response;
     } catch (error) {
       console.error('getFullContentGPT', error)
       return error
@@ -267,7 +268,7 @@ class GptService {
         }
       ]
       console.log('Sending News to GPT', messages)
-      const fineTunedModel = await openai.createChatCompletion({
+      const fineTunedModel = await openai.chat.completions.create({
         model: process.env.AD_DETECTOR_FINE_TUNED_MODEL_ID,
         messages: messages,
         temperature: 0,
@@ -276,11 +277,76 @@ class GptService {
         frequency_penalty: 0,
         presence_penalty: 0
       })
-      return fineTunedModel.data
+      return fineTunedModel;
     } catch (error) {
       console.error('Error in fineTunedModel', error)
     }
   }
+
+  async createAssistant(AllFullContent){
+    try {
+      const instructions = `You are a personal assistant with the following context:\n${AllFullContent}`;
+      const myAssistant = await openai.beta.assistants.create({
+        instructions,
+        name: "News Assistant",
+        tools: [{ type: "code_interpreter" }],
+        model: "gpt-4-turbo",
+      });
+      console.log("Assistant Created");
+      return myAssistant;
+    } catch (error) {
+      console.error("An error occurred during interaction:", error);
+    }
+  }
+  // function to create a new thread
+  async createThread(){
+    try{
+      console.log('Creating Thread..!');
+      const newThread = await openai.beta.threads.create();
+      console.log("Created new thread:", newThread.id);
+      return newThread.id;
+    }catch(error){
+      console.log("Error creating ThreadId", error);
+    }
+  }
+  // Fucntion to run the Assistant and get Answer
+  async runAssistantAndGetResponse(assistantId, threadId, question, interval = 3000, maxAttempts = 15){
+    const userMessage = await openai.beta.threads.messages.create(threadId, {
+        role: "user",
+        content: question,
+    });
+    const run = await openai.beta.threads.runs.create(threadId, { assistant_id: assistantId });
+
+    console.log("Run created:", run.id);
+
+    let attempts = 0;
+    let runStatus = run.status;
+
+    while (attempts < maxAttempts && runStatus !== "completed") {
+        try {
+            const currentRun = await openai.beta.threads.runs.retrieve(threadId, run.id);
+            runStatus = currentRun.status;
+            console.log(`Run status: ${runStatus}`);
+            if (runStatus === "completed") {
+                break; 
+            } else {
+                await new Promise((resolve) => setTimeout(resolve, interval));
+                attempts++;
+            }
+        } catch (error) {
+            console.error("Error retrieving run status:", error);
+            break;
+        }
+    }
+    if (attempts === maxAttempts && runStatus !== "completed") {
+        throw new Error("Run did not complete within the expected time frame.");
+    }
+    const messages = await openai.beta.threads.messages.list(threadId);
+    const answerContents = messages.data.map(msg => msg.content);
+    const assistantResponse = answerContents[0];
+    return assistantResponse;
+}
+
 }
 
 module.exports = new GptService()
