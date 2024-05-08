@@ -6,7 +6,7 @@ const openai = new OpenAIApi(configuration);
 const axios = require("axios");
 const fs = require("fs");
 class GptService {
-  async removeCombinedNews(fullContent) {
+  async removeCombinedNews(gnewsTitle) {
     console.log("Removing combined news");
     const response = await openai.createChatCompletion({
       model: "gpt-3.5-turbo-0125",
@@ -14,11 +14,11 @@ class GptService {
         {
           role: "system",
           content:
-            "Analyze the text provided and determine if it constitutes a news digest. A news digest is characterized by an introductory statement that indicates it is a compilation of recent news, followed by summaries of multiple, distinct, and unrelated news stories. Assess the presence of an introductory phrase that suggests a news compilation and verify if there are at least two summaries of news items that are not topically related to each other. Respond with 'Yes' if the text meets these criteria (i.e., it includes multiple unrelated news summaries); otherwise, respond with 'No' (i.e., it covers a single topic or related topics). Provide a clear 'Yes' or 'No' answer based on these criteria.",
+            "Analyze the news title provided and determine if it constitutes a news digest. A news digest is characterized by a phrase that suggests a compilation of recent news, followed by mentions of multiple, distinct, and unrelated news stories. To assess this, look for an introductory phrase like 'Digest,' 'Briefing,' 'Top Stories,' 'Morning/Evening/Afternoon Digest,' or similar terms indicating a compilation. Verify that the title includes at least two summaries of news items that are not topically related to each other. Respond with 'Yes' if the title meets these criteria (i.e., it mentions multiple unrelated news summaries); otherwise, respond with 'No' (i.e., it covers a single topic or related topics). Provide a clear 'Yes' or 'No' answer based on these criteria. Here are examples of titles that meet these criteria: - 'News18 Afternoon Digest: Sam Pitroda In Soup Again; Modi Says India Will Not Tolerate And More Top Stories' - 'Morning briefing: Another Cong leader questions Poonch attack; Google ex-AI chief praises Microsoft's Nadella, and more' - 'News18 Evening Digest: SC Stays Calcultta HC's Order on Teacher's Recruitment, Kejriwal Interim Bail Plea' - 'Afternoon brief: KL Sharma on why Rahul Gandhi lost to Smriti Irani in 2019; US to India on Nijjar's killing, and more'",
         },
         {
           role: "user",
-          content: `This is the content of the article: ${fullContent}`,
+          content: `This is the content of the article title: ${gnewsTitle}`,
         },
         {
           role: "assistant",
