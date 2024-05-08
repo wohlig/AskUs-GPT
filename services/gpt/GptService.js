@@ -345,8 +345,21 @@ class GptService {
     const answerContents = messages.data.map(msg => msg.content);
     const assistantResponse = answerContents[0];
     return assistantResponse;
-}
-
+  }
+  // Function to delete the Assistant 
+  async deleteAssistant(deleteId){
+    try{
+      const assistantId = await openai.beta.assistants.retrieve(deleteId);
+      if(assistantId.id){
+        const response = await openai.beta.assistants.del(deleteId);
+        return response;
+      }else{
+        return "Assistant Id does not exists ..!"
+      }
+    }catch(error){
+      console.log("Error while deleting the AssistantID");
+    }
+  }
 }
 
 module.exports = new GptService()

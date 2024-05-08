@@ -82,4 +82,15 @@ const runAssistantAndGetResponse = async (req, res) => {
   }
 }
 router.post('/runAssistantAndGetResponse', runAssistantAndGetResponse)
+
+const deleteAssistant = async (req, res) => {
+  try{
+    const result = await gptServices.deleteAssistant(req.body.deleteId);
+    res.json({data:result});
+  }catch(error){
+    console.log("deleteAssistant error", error);
+  }
+}
+router.post('/deleteAssistant', deleteAssistant);
+
 module.exports = router
