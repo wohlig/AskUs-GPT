@@ -3,7 +3,7 @@ const router = express.Router()
 const __constants = require('../../../config/constants')
 const validationOfAPI = require('../../../middlewares/validation')
 const cache = require('../../../middlewares/requestCacheMiddleware')
-const gptServices = require('../../../services/gpt/GptService')
+const geminiServices = require('../../../services/gemini/GeminiService')
 
 /**
  * @namespace -GPT-MODULE-
@@ -27,7 +27,11 @@ const validationSchema = {
   type: 'object',
   required: true,
   properties: {
-    gnewsTitle: {
+    context: {
+      type: 'string',
+      required: true
+    },
+    question: {
       type: 'string',
       required: true
     }
@@ -36,15 +40,15 @@ const validationSchema = {
 const validation = (req, res, next) => {
   return validationOfAPI(req, res, next, validationSchema, 'body')
 }
-const removeCombinedNews = async (req, res) => {
+const getAnsFromGPT = async (req, res) => {
   try {
-    const result = await gptServices.removeCombinedNews(req.body.gnewsTitle)
+    const result = await geminiServices.getAnsFromGPT(req.body.context, req.body.question)
     res.sendJson({ type: __constants.RESPONSE_MESSAGES.SUCCESS, data: { data: result } })
   } catch (err) {
-    console.log('removeCombinedNews Error', err)
+    console.log('getAnsFromGPT Error', err)
     return res.sendJson({ type: err.type || __constants.RESPONSE_MESSAGES.SERVER_ERROR, err: err.err || err })
   }
 }
 
-router.post('/removeCombinedNews', validation, removeCombinedNews)
+router.post('/getAnsFromGPT', validation, getAnsFromGPT)
 module.exports = router
