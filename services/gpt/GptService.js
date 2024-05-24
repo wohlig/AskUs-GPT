@@ -6,7 +6,7 @@ const openai = new OpenAI({
 const axios = require('axios')
 const fs = require('fs')
 class GptService {
-  async removeCombinedNews (fullContent) {
+  async removeCombinedNews (gnewsTitle) {
     console.log('Removing combined news')
     const response = await openai.chat.completions.create({
       model: 'gpt-3.5-turbo-0125',
@@ -17,7 +17,7 @@ class GptService {
         },
         {
           role: 'user',
-          content: `This is the content of the article: ${fullContent}`
+          content: `This is the content of the article: ${gnewsTitle}`
         },
         {
           role: 'assistant',
