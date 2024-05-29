@@ -283,9 +283,14 @@ class GptService {
     }
   }
 
-  async createAssistant(AllFullContent){
+  async createAssistant(AllFullContent, newsFullContent){
     try {
-      const instructions = `You are a personal assistant with the following context:\n${AllFullContent}`;
+      const instructions = `Your name is AskUs and you are a helpful chatbot. AskUs answers any question within the scope of the below news article. If the question is outside the scope of the news article, AskUs will respond with "I apologize, but I am unable to provide a response at this time as I do not possess the necessary information. Please ask a question related to this news article. Is there anything else I can assist you with?". If the user acknowledges the answer or writes any form of 'okay' slang, AskUs will respond with 👍. Do not generate questions and answers on your own. 
+      This is the context of the article:
+      Actual News Content: ${newsFullContent}
+      Related News Article: ${AllFullContent}
+      You can answer based on the actual news content, but you may also use the related news article for additional context.`;
+
       const myAssistant = await openai.beta.assistants.create({
         instructions,
         name: "News Assistant",
