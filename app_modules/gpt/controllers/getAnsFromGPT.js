@@ -54,7 +54,7 @@ router.post('/getAnsFromGPT', cache.route(600), validation, getAnsFromGPT)
 
 const createAssistant = async (req, res) => {
   try{
-    const result = await gptServices.createAssistant(req.body.context)
+    const result = await gptServices.createAssistant(req.body.context, req.body.context2);
     res.json({data:result})
   }catch(error){
     console.log("createAssistant error", error);
