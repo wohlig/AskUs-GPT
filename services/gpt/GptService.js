@@ -295,7 +295,7 @@ class GptService {
         instructions,
         name: "News Assistant",
         tools: [{ type: "code_interpreter" }],
-        model: "gpt-4-turbo",
+        model: "gpt-3.5-turbo-0125",
       });
       console.log("Assistant Created");
       return myAssistant;
