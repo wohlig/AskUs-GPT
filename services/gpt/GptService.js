@@ -1,15 +1,15 @@
-const { Configuration, OpenAIApi } = require("openai");
-const configuration = new Configuration({
-  apiKey: process.env.OPENAI_API_KEY,
-});
-const openai = new OpenAIApi(configuration);
-const axios = require("axios");
-const fs = require("fs");
+const OpenAI = require("openai");
+const openai = new OpenAI({
+    apiKey: process.env.OPENAI_API_KEY
+})
+
+const axios = require('axios')
+const fs = require('fs')
 class GptService {
-  async removeCombinedNews(gnewsTitle) {
-    console.log("Removing combined news");
-    const response = await openai.createChatCompletion({
-      model: "gpt-3.5-turbo-0125",
+  async removeCombinedNews (fullContent) {
+    console.log('Removing combined news')
+    const response = await openai.chat.completions.create({
+      model: 'gpt-3.5-turbo-0125',
       messages: [
         {
           role: "system",
@@ -29,14 +29,15 @@ class GptService {
       max_tokens: 256,
       top_p: 1,
       frequency_penalty: 0,
-      presence_penalty: 0,
-    });
-    return response.data;
+      presence_penalty: 0
+    })
+    return response;
   }
-  async getAnsFromGPT(context, question) {
-    console.log("Sending Question to GPT");
-    const response = await openai.createChatCompletion({
-      model: "gpt-3.5-turbo-0125",
+
+  async getAnsFromGPT (context, question) {
+    console.log('Sending Question to GPT')
+    const response = await openai.chat.completions.create({
+      model: 'gpt-3.5-turbo-0125',
       messages: [
         {
           role: "system",
@@ -55,9 +56,9 @@ class GptService {
       max_tokens: 256,
       top_p: 1,
       frequency_penalty: 0,
-      presence_penalty: 0,
-    });
-    return response.data;
+      presence_penalty: 0
+    })
+    return response;
   }
 
   async getContentFromGPT(
@@ -90,20 +91,20 @@ class GptService {
         5. Give the same summary created above in bullet points strictly in ${language} language.
         6. Compare the news article provided above with each array from the trending tags provided below and then give a similarity score (no decimal scores) out of 10 for every array from the trending tags. A high similarity score means that the array from trending tags is highly related to the news article and a low similarity score means that the array from trending tags is not too related to the news article. Provide only the similarity scores in a single line removing any preceding serial numbers or letters.
         ${trends}
-        7. Create ${process.env.NUMBER_OF_SUGGESTION_QNA} suggested questions and their answers, label them as "SuggestedQnA".`,
-        },
-      ];
-      const response = await openai.createChatCompletion({
+        7. Create ${process.env.NUMBER_OF_SUGGESTION_QNA} suggested questions and their answers, label them as "SuggestedQnA".`
+        }
+      ]
+      const response = await openai.chat.completions.create({
         model: model,
         messages: messages,
         temperature: 0,
         max_tokens: max_tokens,
         top_p: 1,
         frequency_penalty: 0,
-        presence_penalty: 0,
-      });
-      console.log(response.data.choices[0].message);
-      return response.data;
+        presence_penalty: 0
+      })
+      console.log(response.choices[0].message)
+      return response;
     } catch (error) {
       console.error("Error in getContentFromGPT", error);
       return error;
@@ -125,19 +126,19 @@ class GptService {
           Headline: ${headline}
         1. Analyze the provided summary and headline and categorize it using the following predefined categories. Each article may have multiple assigned categories, but ensure that all assigned categories are selected from the list below. Do not include any new categories that are not part of the provided list. The category 'nation' provided below pertains to news about India. The category 'advertisement' provided below pertains to any news that promotes the sale, discounts, features, price of any product be it a car, or a technology device, etc. Also, news related to games will come under 'advertisement' category. Provide only the category names in lowercase format and in a single line, removing any preceding numbers.
         ${updatedCategories}
-        2. Analyse the above summary and headline and return the sentiment of that article. The sentiments you possess are [Positive, Negative, Neutral]. Give the answer in 1 word only.`,
-        },
-      ];
-      const response = await openai.createChatCompletion({
-        model: "gpt-3.5-turbo-0125",
+        2. Analyse the above summary and headline and return the sentiment of that article. The sentiments you possess are [Positive, Negative, Neutral]. Give the answer in 1 word only.`
+        }
+      ]
+      const response = await openai.chat.completions.create({
+        model: 'gpt-3.5-turbo-0125',
         messages: messages,
         temperature: 0,
         max_tokens: 1000,
         top_p: 1,
         frequency_penalty: 0,
-        presence_penalty: 0,
-      });
-      return response.data;
+        presence_penalty: 0
+      })
+      return response;
     } catch (error) {
       console.error("Error in getClassificationGPT", error);
       return error;
@@ -182,29 +183,29 @@ class GptService {
         - Compassion: News expressing empathy for those facing hardships or suffering.
         - Support: Stories that offer encouragement and assistance to affected individuals or communities.
         - Solidarity: News that unites people in shared understanding or support for a cause.
-        `,
-        },
-      ];
-      const response = await openai.createChatCompletion({
-        model: "gpt-3.5-turbo-0125",
+        `
+        }
+      ]
+      const response = await openai.chat.completions.create({
+        model: 'gpt-3.5-turbo-0125',
         messages: messages,
         temperature: 0,
         max_tokens: 1000,
         top_p: 1,
         frequency_penalty: 0,
-        presence_penalty: 0,
-      });
-      return response.data;
+        presence_penalty: 0
+      })
+      return response;
     } catch (error) {
       console.error("Error in getClassificationGPT", error);
       return error;
     }
   }
 
-  async chatGPTAns(context, question) {
-    console.log("Sending Question to GPT");
-    const response = await openai.createChatCompletion({
-      model: "gpt-3.5-turbo-0125",
+  async chatGPTAns (context, question) {
+    console.log('Sending Question to GPT')
+    const response = await openai.chat.completions.create({
+      model: 'gpt-3.5-turbo-0125',
       messages: [
         {
           role: "system",
@@ -224,9 +225,9 @@ class GptService {
       max_tokens: 256,
       top_p: 1,
       frequency_penalty: 0,
-      presence_penalty: 0,
-    });
-    return response.data;
+      presence_penalty: 0
+    })
+    return response;
   }
 
   async getFullContentGPT(transcript, language) {
@@ -240,19 +241,19 @@ class GptService {
         {
           role: "user",
           content: `${transcript}
-          Generate a news article for the above content`,
-        },
-      ];
-      const response = await openai.createChatCompletion({
-        model: "gpt-3.5-turbo-0125",
+          Generate a news article for the above content`
+        }
+      ]
+      const response = await openai.chat.completions.create({
+        model: 'gpt-3.5-turbo-0125',
         messages: messages,
         temperature: 0,
         max_tokens: 2000,
         top_p: 1,
         frequency_penalty: 0,
-        presence_penalty: 0,
-      });
-      return response.data;
+        presence_penalty: 0
+      })
+      return response;
     } catch (error) {
       console.error("getFullContentGPT", error);
       return error;
@@ -267,23 +268,106 @@ class GptService {
           content: "You classify articles into news and ads",
         },
         {
-          role: "user",
-          content: `Is this article an ad? Title: ${news.headline}, Article: ${news.summary}?`,
-        },
-      ];
-      console.log("Sending News to GPT", messages);
-      const fineTunedModel = await openai.createChatCompletion({
+          role: 'user',
+          content: `Is this article an ad? Title: ${news.headline}, Article: ${news.summary}?`
+        }
+      ]
+      console.log('Sending News to GPT', messages)
+      const fineTunedModel = await openai.chat.completions.create({
         model: process.env.AD_DETECTOR_FINE_TUNED_MODEL_ID,
         messages: messages,
         temperature: 0,
         max_tokens: 1000,
         top_p: 1,
         frequency_penalty: 0,
-        presence_penalty: 0,
-      });
-      return fineTunedModel.data;
+        presence_penalty: 0
+      })
+      return fineTunedModel;
     } catch (error) {
       console.error("Error in fineTunedModel", error);
+    }
+  }
+
+  async createAssistant(AllFullContent, newsFullContent){
+    try {
+      const instructions = `Your name is AskUs and you are a helpful chatbot. AskUs answers any question within the scope of the below news article. If the question is outside the scope of the news article, AskUs will respond with "I apologize, but I am unable to provide a response at this time as I do not possess the necessary information. Please ask a question related to this news article. Is there anything else I can assist you with?". If the user acknowledges the answer or writes any form of 'okay' slang, AskUs will respond with 👍. Do not generate questions and answers on your own. 
+      This is the context of the article:
+      Actual News Content: ${newsFullContent}
+      Related News Article: ${AllFullContent}
+      You can answer based on the actual news content, but you may also use the related news article for additional context.`;
+
+      const myAssistant = await openai.beta.assistants.create({
+        instructions,
+        name: "News Assistant",
+        tools: [{ type: "code_interpreter" }],
+        model: "gpt-3.5-turbo-0125",
+      });
+      console.log("Assistant Created");
+      return myAssistant;
+    } catch (error) {
+      console.error("An error occurred during interaction:", error);
+    }
+  }
+  // function to create a new thread
+  async createThread(){
+    try{
+      console.log('Creating Thread..!');
+      const newThread = await openai.beta.threads.create();
+      console.log("Created new thread:", newThread.id);
+      return newThread.id;
+    }catch(error){
+      console.log("Error creating ThreadId", error);
+    }
+  }
+  // Fucntion to run the Assistant and get Answer
+  async runAssistantAndGetResponse(assistantId, threadId, question, interval = 3000, maxAttempts = 15){
+    const userMessage = await openai.beta.threads.messages.create(threadId, {
+        role: "user",
+        content: question,
+    });
+    const run = await openai.beta.threads.runs.create(threadId, { assistant_id: assistantId });
+
+    console.log("Run created:", run.id);
+
+    let attempts = 0;
+    let runStatus = run.status;
+
+    while (attempts < maxAttempts && runStatus !== "completed") {
+        try {
+            const currentRun = await openai.beta.threads.runs.retrieve(threadId, run.id);
+            runStatus = currentRun.status;
+            console.log(`Run status: ${runStatus}`);
+            if (runStatus === "completed") {
+                break; 
+            } else {
+                await new Promise((resolve) => setTimeout(resolve, interval));
+                attempts++;
+            }
+        } catch (error) {
+            console.error("Error retrieving run status:", error);
+            break;
+        }
+    }
+    if (attempts === maxAttempts && runStatus !== "completed") {
+        throw new Error("Run did not complete within the expected time frame.");
+    }
+    const messages = await openai.beta.threads.messages.list(threadId);
+    const answerContents = messages.data.map(msg => msg.content);
+    const assistantResponse = answerContents[0];
+    return assistantResponse;
+  }
+  // Function to delete the Assistant 
+  async deleteAssistant(deleteId){
+    try{
+      const assistantId = await openai.beta.assistants.retrieve(deleteId);
+      if(assistantId.id){
+        const response = await openai.beta.assistants.del(deleteId);
+        return response;
+      }else{
+        return "Assistant Id does not exists ..!"
+      }
+    }catch(error){
+      console.log("Error while deleting the AssistantID");
     }
   }
 }
