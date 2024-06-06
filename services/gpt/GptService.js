@@ -79,7 +79,7 @@ class GptService {
         {
           role: "system",
           content:
-            'You are a helpful assistant. First give the summary, label it as "Summary:", then the headline, label it as "Headline:" then the tweet, label it as "Tweet:", then the tags, label it as "Tags:", then the bullet points, label it as "Bullets:", then similarity scores, label them as "Similarities:" and finally suggested question and answer, label them as "SuggestedQnA".',
+            'You are a helpful assistant. First give the summary, label it as "Summary:", then the headline, label it as "Headline:" then the tweet, label it as "Tweet:", then the tags, label it as "Tags:", then the bullet points, label it as "Bullets:", then similarity scores, label them as "Similarities:" and finally suggested question and answer, label them as "SuggestedQnA". Ensure the "SuggestedQnA" section follows this format: Ensure the "SuggestedQnA" section follows this format: "1. question1? answer1. 2. question2? answer2. 3. question3? answer3."',
         },
         {
           role: "user",
@@ -91,7 +91,7 @@ class GptService {
         5. Give the same summary created above in bullet points strictly in ${language} language.
         6. Compare the news article provided above with each array from the trending tags provided below and then give a similarity score (no decimal scores) out of 10 for every array from the trending tags. A high similarity score means that the array from trending tags is highly related to the news article and a low similarity score means that the array from trending tags is not too related to the news article. Provide only the similarity scores in a single line removing any preceding serial numbers or letters.
         ${trends}
-        7. Create ${process.env.NUMBER_OF_SUGGESTION_QNA} suggested questions and their answers, label them as "SuggestedQnA".`
+        7. Create ${process.env.NUMBER_OF_SUGGESTION_QNA} suggested questions and their answers, label them as "SuggestedQnA". Ensure the "SuggestedQnA" section follows this format: "1. question1? answer1. 2. question2? answer2. 3. question3? answer3."`
         }
       ]
       const response = await openai.chat.completions.create({
