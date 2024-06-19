@@ -30,18 +30,26 @@ const pinecone = new Pinecone({
 const index = pinecone.index("budget-rag");
 
 class BudgetService {
-  async createInsights(persona, pdf) {
+  async getPdfText(pdf) {
     try {
-      console.log("Creating Insights", pdf);
+      let pdfData = await pdf_parse(pdf);
+      return pdfData.text;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  async createInsights(persona, text, language) {
+    try {
+      console.log("Creating Insights");
       const llm_tracer = await langsmith_trace;
       const text_splitter = await langchainTextSplitter;
       const doc_worker = await langchainDocument;
       const chat_gpt = await chatGpt;
       const insight_chain = await chains;
       const prompt_template = await promptTemplate;
-      //  extract text from pdf file
-      let pdfData = await pdf_parse(pdf);
-      const docs = [new doc_worker.Document({ pageContent: pdfData.text })];
+      // extract text from pdf file
+      // let pdfData = await pdf_parse(pdf);
+      const docs = [new doc_worker.Document({ pageContent: text })];
       const splitter = new text_splitter.TokenTextSplitter({
         chunkSize: 10000,
         chunkOverlap: 250,
@@ -63,21 +71,21 @@ class BudgetService {
       const summaryTemplate = `
         You are an expert in creating insights from national budget documents. Your goal is to create insights based on the persona provided. 
         Ensure that the insights are relevant to the persona and cover all significant points mentioned in the document. 
-
+  
         Persona: ${persona}
-
+  
         Instructions:
         1. Highlight the key points that are specifically relevant to the persona.
         2. Avoid general information unless it has a significant impact on the persona.
         3. Provide actionable insights and implications for the persona.
         4. Use clear and concise language.
         5. Where applicable, include examples to illustrate points.
-
+  
         Below you find the content of the national budget document:
         -------- {text} --------
-
+  
         Total output will be useful insights based on the persona provided.
-
+  
         INSIGHTS:
         `;
 
@@ -87,26 +95,26 @@ class BudgetService {
       const summaryRefineTemplate = `
         You are an expert in creating insights from national budget documents. Your goal is to create insights based on the persona provided. 
         Ensure that the insights are relevant to the persona and cover all significant points mentioned in the document. 
-
+  
         Persona: ${persona}
-
+  
         Instructions:
         1. Highlight the key points that are specifically relevant to the persona.
         2. Avoid general information unless it has a significant impact on the persona.
         3. Provide actionable insights and implications for the persona.
         4. Use clear and concise language.
         5. Where applicable, include examples to illustrate points.
-
+  
         We have provided an existing insight up to a certain point:
         {existing_answer}
-
+  
         Below you find the content of the national budget document:
         -------- {text} --------
-
+  
         Given the new context, refine the insights. If the context isn't useful, return the original insights.
-
+  
         Total output will be useful insights based on the persona provided.
-
+  
         INSIGHTS:
         `;
 
@@ -127,11 +135,16 @@ class BudgetService {
         summary = await summarizeChain.run(docsSummary);
       });
       await llm_summariser(llmSummary, SUMMARY_PROMPT, INSIGHTS_REFINE_PROMPT);
-      return summary;
+      if (language == "English") {
+        return summary;
+      }
+      const translation = await this.translateText(summary, language);
+      return translation;
     } catch (error) {
       console.log(error);
     }
   }
+
   async pushDocumentsToPinecone(files) {
     // await this.deleteVectorsFromPinecone()
     // return "Doneeee"
@@ -290,6 +303,26 @@ class BudgetService {
         {
           role: "assistant",
           content: "Answer: ",
+        },
+      ],
+      model: "gpt-4o",
+    });
+    return response.choices[0].message.content;
+  }
+  async translateText(text, language) {
+    const response = await openai.chat.completions.create({
+      messages: [
+        {
+          role: "system",
+          content: `You are a translation expert. Translate the following text to ${language}:`,
+        },
+        {
+          role: "user",
+          content: `Text: ${text}`,
+        },
+        {
+          role: "assistant",
+          content: "Translation: ",
         },
       ],
       model: "gpt-4o",

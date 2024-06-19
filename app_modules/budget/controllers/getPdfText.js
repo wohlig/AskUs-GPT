@@ -4,6 +4,8 @@ const __constants = require("../../../config/constants");
 const validationOfAPI = require("../../../middlewares/validation");
 // const cache = require('../../../middlewares/requestCacheMiddleware')
 const BudgetService = require("../../../services/budget/budgetService");
+const multer = require("multer");
+const upload = multer();
 
 /**
  * @namespace -GNEWS-MODULE-
@@ -31,12 +33,10 @@ const validationSchema = {
 const validation = (req, res, next) => {
   return validationOfAPI(req, res, next, validationSchema, "body");
 };
-const askQna = async (req, res) => {
+const getPdfContent = async (req, res) => {
   try {
-    const result = await BudgetService.createInsights(
-      req.body.persona,
-      req.body.text,
-      req.body.language
+    const result = await BudgetService.getPdfText(
+      req.files[0].buffer
     );
     res.sendJson({ type: __constants.RESPONSE_MESSAGES.SUCCESS, data: result });
   } catch (err) {
@@ -48,9 +48,9 @@ const askQna = async (req, res) => {
   }
 };
 
-router.post("/createInsights", validation, askQna);
-// router.post("/createInsights", upload.array('files'), (req, res) => {
-//   console.log("createInsights", req.files, req.body);
+router.post("/getPdfText", upload.array("files"), validation, getPdfContent);
+// router.post("/getPdfText", upload.array('files'), (req, res) => {
+//   console.log("getPdfText", req.files, req.body);
 //   res.sendJson({
 //     type: __constants.RESPONSE_MESSAGES.SUCCESS,
 //     data: req.files,
