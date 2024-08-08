@@ -1,3 +1,5 @@
+const dotenv = require('dotenv');
+dotenv.config();
 const pdf_parse = require("pdf-parse");
 // const { CSVLoader } = require("@langchain/community/document_loaders/fs/csv");
 // const __constants = require("../../config/constants");
@@ -19,7 +21,7 @@ const { uuid } = require("uuidv4");
 const { Pinecone } = require("@pinecone-database/pinecone");
 
 const pinecone = new Pinecone({
-  apiKey: process.env.PINECONE_API_KEY2,
+  apiKey: process.env.PINECONE_GOOGLE_API_KEY,
 });
 // const RagDocs = require("../../mongooseSchema/RagDocs");
 // const { compile } = require("html-to-text");
