@@ -7,7 +7,8 @@ const openai = new OpenAI({
 })
 
 const axios = require('axios')
-const fs = require('fs')
+const fs = require('fs');
+const { response } = require('express');
 
 class GptService {
   async removeCombinedNews(gnewsTitle) {
@@ -65,7 +66,7 @@ class GptService {
     return response;
   }
 
-  // my code
+
   async getContentFromGPT(context, language, type, trends, max_tokens = 2000, model = "gpt-3.5-turbo-0125") {
     if (type === "YouTube") {
       max_tokens = 3000;
@@ -149,11 +150,12 @@ class GptService {
         frequency_penalty: 0,
         presence_penalty: 0
       });
+      const usage = response.usage
 
 
       const parsedResponse = gptResponseSchema.parse(response);
       const result = parsedResponse.choices[0].message;
-      return result;
+      return { result, usage };
 
     } catch (error) {
       console.error("Error in getContentFromGPT", error);
@@ -209,8 +211,6 @@ class GptService {
           `
         }
       ];
-
-
       const response = await openai.chat.completions.create({
         model: 'gpt-3.5-turbo-0125',
         messages: messages,
@@ -222,7 +222,6 @@ class GptService {
       });
 
       const responseText = response.choices[0].message.content.trim();
-     
       const outputSchema = z.object({
         Categories: z.string().min(1),
         Sentiment: z.enum(['Positive', 'Negative', 'Neutral']),
@@ -235,28 +234,22 @@ class GptService {
         ])
       });
 
-
       const [categoriesPart, sentimentPart, advancedSentimentPart] = responseText
         .split(/Categories:|Sentiment:|AdvancedSentiment:/)
         .map(part => part.trim())
         .filter(part => part !== "");
-
-
-
 
       const parsedOutput = outputSchema.parse({
         Categories: categoriesPart,
         Sentiment: sentimentPart,
         AdvancedSentiment: advancedSentimentPart
       });
-
       return parsedOutput;
     } catch (error) {
       console.error("Error in getAdvancedClassificationGPT", error);
       return error;
     }
   }
-
 
   async chatGPTAns(context, question) {
     console.log('Sending Question to GPT')
@@ -429,3 +422,4 @@ class GptService {
 }
 
 module.exports = new GptService();
+
