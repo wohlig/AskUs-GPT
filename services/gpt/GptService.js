@@ -1,6 +1,6 @@
 const OpenAI = require("openai");
 const openai = new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY
+  apiKey: process.env.OPENAI_API_KEY
 })
 
 const axios = require('axios')
@@ -158,31 +158,31 @@ class GptService {
           role: "user",
           content: `Summary: ${summary}
           Headline: ${headline}
-        1. Analyze the provided summary and headline and categorize it using the following predefined categories. Each article may have multiple assigned categories, but ensure that all assigned categories are selected from the list below. Do not include any new categories that are not part of the provided list. The category 'nation' provided below pertains to news about India. The category 'advertisement' provided below pertains to any news that promotes the sale, discounts, features, price of any product be it a car, or a technology device, etc. Also, news related to games will come under 'advertisement' category. Provide only the category names in lowercase format and in a single line, removing any preceding numbers.
-        ${updatedCategories}
-        2. Analyse the above summary and headline and return the sentiment of that article. The sentiments you possess are [Positive, Negative, Neutral]. Give the answer in 1 word only.
-        3. Next, analyze the news and provide an advanced sentiment for the news. Choose one of the following advanced sentiments only from the below list also having its description and return only the name of the sentiment in one word.
-        - Optimism: Positive developments, success stories, or improvements.
-        - Jubilation: Celebrating achievements, milestones, or positive events.
-        - Hope: Encouraging or inspiring news that offers hope for the future.
-        - Relief: Reporting on the resolution of a crisis or the prevention of a negative event.
-        - Progress: News about advancements, innovations, or positive changes.
-        - Alarm: News that raises concern, often related to urgent or alarming situations.
-        - Anger: Stories that provoke anger or outrage due to injustices or negative outcomes.
-        - Grief: Reporting on tragedies, disasters, or loss that evokes sadness and sympathy.
-        - Disappointment: News that falls short of expectations or results in letdowns.
-        - Frustration: Reporting on persistent problems or issues that cause annoyance.
-        - Informational: Reporting facts without emotional bias or opinion.
-        - Matter-of-fact: Unbiased presentation of events, often in a straightforward manner.
-        - Educational: News that aims to inform and educate without a particular emotional tone.
-        - Reporting: Neutral coverage of events, typically with minimal emotional expression.
-        - Statistic-based: News presenting data and statistics without a clear emotional tone.
-        - Ambivalence: News that includes both positive and negative aspects.
-        - Balanced: Reporting that provides a fair representation of contrasting views.
-        - Bittersweet: News that combines elements of both joy and sorrow.
-        - Compassion: News expressing empathy for those facing hardships or suffering.
-        - Support: Stories that offer encouragement and assistance to affected individuals or communities.
-        - Solidarity: News that unites people in shared understanding or support for a cause.
+          1. Analyze the provided summary and headline and categorize it using the following predefined categories. Each article may have multiple assigned categories, but ensure that all assigned categories are selected from the list below. Do not include any new categories that are not part of the provided list. The category 'nation' provided below pertains to news about India. The category 'advertisement' provided below pertains to any news that promotes the sale, discounts, features, price of any product be it a car, or a technology device, etc. Also, news related to games will come under 'advertisement' category. Provide only the category names in lowercase format and in a single line, removing any preceding numbers.
+          ${updatedCategories}
+          2. Analyse the above summary and headline and return the sentiment of that article. The sentiments you possess are [Positive, Negative, Neutral]. Give the answer in 1 word only.
+          3. Next, analyze the news and provide an advanced sentiment for the news. Choose one of the following advanced sentiments only from the below list also having its description and return only the name of the sentiment in one word.
+          - Optimism: Positive developments, success stories, or improvements.
+          - Jubilation: Celebrating achievements, milestones, or positive events.
+          - Hope: Encouraging or inspiring news that offers hope for the future.
+          - Relief: Reporting on the resolution of a crisis or the prevention of a negative event.
+          - Progress: News about advancements, innovations, or positive changes.
+          - Alarm: News that raises concern, often related to urgent or alarming situations.
+          - Anger: Stories that provoke anger or outrage due to injustices or negative outcomes.
+          - Grief: Reporting on tragedies, disasters, or loss that evokes sadness and sympathy.
+          - Disappointment: News that falls short of expectations or results in letdowns.
+          - Frustration: Reporting on persistent problems or issues that cause annoyance.
+          - Informational: Reporting facts without emotional bias or opinion.
+          - Matter-of-fact: Unbiased presentation of events, often in a straightforward manner.
+          - Educational: News that aims to inform and educate without a particular emotional tone.
+          - Reporting: Neutral coverage of events, typically with minimal emotional expression.
+          - Statistic-based: News presenting data and statistics without a clear emotional tone.
+          - Ambivalence: News that includes both positive and negative aspects.
+          - Balanced: Reporting that provides a fair representation of contrasting views.
+          - Bittersweet: News that combines elements of both joy and sorrow.
+          - Compassion: News expressing empathy for those facing hardships or suffering.
+          - Support: Stories that offer encouragement and assistance to affected individuals or communities.
+          - Solidarity: News that unites people in shared understanding or support for a cause.
         `
         }
       ]
@@ -322,8 +322,8 @@ class GptService {
   // Fucntion to run the Assistant and get Answer
   async runAssistantAndGetResponse(assistantId, threadId, question, interval = 3000, maxAttempts = 15){
     const userMessage = await openai.beta.threads.messages.create(threadId, {
-        role: "user",
-        content: question,
+      role: "user",
+      content: question,
     });
     const run = await openai.beta.threads.runs.create(threadId, { assistant_id: assistantId });
 
@@ -333,23 +333,23 @@ class GptService {
     let runStatus = run.status;
 
     while (attempts < maxAttempts && runStatus !== "completed") {
-        try {
-            const currentRun = await openai.beta.threads.runs.retrieve(threadId, run.id);
-            runStatus = currentRun.status;
-            console.log(`Run status: ${runStatus}`);
-            if (runStatus === "completed") {
-                break; 
-            } else {
-                await new Promise((resolve) => setTimeout(resolve, interval));
-                attempts++;
-            }
-        } catch (error) {
-            console.error("Error retrieving run status:", error);
-            break;
+      try {
+        const currentRun = await openai.beta.threads.runs.retrieve(threadId, run.id);
+        runStatus = currentRun.status;
+        console.log(`Run status: ${runStatus}`);
+        if (runStatus === "completed") {
+          break;
+        } else {
+          await new Promise((resolve) => setTimeout(resolve, interval));
+          attempts++;
         }
+      } catch (error) {
+        console.error("Error retrieving run status:", error);
+        break;
+      }
     }
     if (attempts === maxAttempts && runStatus !== "completed") {
-        throw new Error("Run did not complete within the expected time frame.");
+      throw new Error("Run did not complete within the expected time frame.");
     }
     const messages = await openai.beta.threads.messages.list(threadId);
     const answerContents = messages.data.map(msg => msg.content);
@@ -370,6 +370,44 @@ class GptService {
       console.log("Error while deleting the AssistantID");
     }
   }
+  async getTrendingTitlesFromGpt(topics, interval = 3000, maxAttempts = 15) {
+    try{
+      console.log("topics",topics)
+      let prompt=`Convert the following each topics into one small topic of 2-3 words: ${topics.map((item) =>   (item.map((topic)=> (topic))))} list each topic with separeted by ',' rather than listing them all with numbers and avoid giving me any special character like '**','\n'  in response`;
+      const message = 
+          {role: "system",
+          content: prompt}
+     
+      ;
+     topics.map((item) =>   (item.map((topic)=> console.log("message data",topic))))
+     
+      // console.log("🚀 ~ GptService ~ getTrendingTitlesFromGpt ~ prompt:", prompt)
+    
+
+      // console.log("🚀 ~ GptService ~ getTrendingTitlesFromGpt ~ prompt:", messages)
+    const response = await openai.chat.completions.create({
+      model: "gpt-3.5-turbo-0125",
+      messages: [
+        {role: "system",
+          content: prompt},
+        {
+          role: "user",
+          content: `This is the content of the article topic: ${topics.map((group, index) => `${index + 1}. ${group.join(', ')}`).join('\n')}`,
+        },
+        {
+          role: "assistant",
+          content: "Answer: ",
+        },
+      ],
+      max_tokens: 150
+    });
+    console.log("🚀 ~ GptService ~ getTrendingTitlesFromGpt ~ response:", response.choices[0].message.content.trim())
+    const titles = response.choices[0].message.content.trim();
+    console.log(titles)
+    return titles
+  }catch(error){
+    console.log("Error while getting Trending topics",error)
+  }}
 }
 
 module.exports = new GptService();
