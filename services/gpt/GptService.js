@@ -215,7 +215,7 @@ class GptService {
           - Compassion: News expressing empathy for those facing hardships or suffering.
           - Support: Stories that offer encouragement and assistance to affected individuals or communities.
           - Solidarity: News that unites people in shared understanding or support for a cause.
-          // 4.Ensure that all generated news content is entirely free of unnecessary characters such as \n, *, extra spaces, or any other extraneous symbols. The content must be precise, clean, and meticulously formatted to maintain a high standard of readability and professionalism. Every element should be concise and well-structured, leaving no room for any formatting errors or irrelevant details.`
+          4.Ensure that all generated news content is entirely free of unnecessary characters such as \n, *, extra spaces, or any other extraneous symbols. The content must be precise, clean, and meticulously formatted to maintain a high standard of readability and professionalism. Every element should be concise and well-structured, leaving no room for any formatting errors or irrelevant details.`
         }
       ];
       const response = await openai.chat.completions.create({
