@@ -1,7 +1,7 @@
-const { z } = require('zod');
-const { StructuredOutputParser } = require('openai', 'langchain/output_parsers');
 
 const OpenAI = require("openai");
+const { z } = require('zod');
+const { StructuredOutputParser } = require('openai', 'langchain/output_parsers');
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY
 })
@@ -14,7 +14,7 @@ class GptService {
   async removeCombinedNews(gnewsTitle) {
     console.log('Removing combined news')
     const response = await openai.chat.completions.create({
-      model: 'gpt-3.5-turbo-0125',
+      model: 'gpt-4o-mini',
       messages: [
         {
           role: "system",
@@ -42,7 +42,7 @@ class GptService {
   async getAnsFromGPT(context, question) {
     console.log('Sending Question to GPT')
     const response = await openai.chat.completions.create({
-      model: 'gpt-3.5-turbo-0125',
+      model: 'gpt-4o-mini',
       messages: [
         {
           role: "system",
@@ -67,10 +67,13 @@ class GptService {
   }
 
 
-  async getContentFromGPT(context, language, type, trends, max_tokens = 2000, model = "gpt-3.5-turbo-0125") {
+
+
+  async getContentFromGPT(context, language, type, trends, max_tokens = 2000, model = "gpt-4o-mini") {
     if (type === "YouTube") {
       max_tokens = 3000;
-      model = "gpt-3.5-turbo-0125";
+      model = "gpt-4o-mini";
+
     }
 
     console.log("Sending News to GPT", language);
@@ -85,9 +88,10 @@ class GptService {
             sections.forEach(section => {
               const regex = new RegExp(`${section}\\s*(.*?)(?=${sections.filter(sec => sec !== section).join("|")}|$)`, 's');
               const match = content.match(regex);
+              // console.log("🚀 ~ GptService ~ content:z.string ~ match:", match)
               result[section.toLowerCase().slice(0, -1)] = match ? match[1].trim() : null;
             });
-
+            console.log("result:", result)
             if (result.bullets) {
               result.bullets = result.bullets.split('\n').map(line => line.trim()).filter(line => line);
             }
@@ -107,9 +111,13 @@ class GptService {
                 });
             }
 
+
+
             if (result.similarities) {
-              result.similarities = result.similarities.split(/\s+/).map(score => score.trim()).filter(score => score).map(Number);
+              result.similarities = result.similarities.split(', ').map(score => score.trim()).filter(score => score).map(Number);
             }
+            console.log("",result.similarities)
+
 
             return result;
 
@@ -119,8 +127,8 @@ class GptService {
     });
 
     try {
-      console.log(trends);
-
+      // console.log("context",context)
+      console.log("trends", trends)
       const messages = [
         {
           role: "system",
@@ -135,9 +143,17 @@ class GptService {
         3. Create a tweet for the news article strictly in ${language} language.
         4. Create tags for the above article strictly in ${language} language.
         5. Give the same summary created above in bullet points strictly in ${language} language.
-        6. Compare the news article provided above with each array from the trending tags provided below and then give a similarity score (no decimal scores) out of 10 for every array from the trending tags. A high similarity score means that the array from trending tags is highly related to the news article and a low similarity score means that the array from trending tags is not too related to the news article. Provide only the similarity scores in a single line removing any preceding serial numbers or letters.
-        ${trends}
-        7. Create ${process.env.NUMBER_OF_SUGGESTION_QNA} suggested questions and their answers, label them as "SuggestedQnA". Ensure the "SuggestedQnA" section follows this format: "1. question1? answer1. 2. question2? answer2. 3. question3? answer3."`
+        6. the numerical similarity scores in a single line, removing any preceding serial numbers or letters.Compare the news article provided above with each array from the trending tags below. Assign a similarity score out of 10 for each array based on any related connections, such as themes, locations, events, or individuals. A high similarity score should be given if the array is strongly related to the news article, and a low similarity score should be given if it is not very related. Even weak or indirect connections should be considered when assigning scores. Also, ensure that strong, direct connections receive appropriately higher scores.
+          Provide only
+          Trending Tags: ${trends}
+        // 6.Compare the news article provided above with each array from the trending tags below. Assign a similarity score out of 10 for each array based on any related connections,such as themes, locations, events, or individuals. A high similarity score means the array is highly related to the news article, and a low similarity score means it is not very related.Provide numerical scores donly and not Nan or undefined. Even weak or indirect connections should be considered when assigning scores. Provide only the similarity scores in a single line, removing any preceding serial numbers or letters.
+        //  ${trends} 
+        // 6. Carefully analyze the news article below and compare it with each array from the trending tags provided. Look for any possible connections, including direct, indirect, or even loose thematic links. Consider relationships in terms of people, events, locations, or shared concepts.
+           When assigning a similarity score out of 10 for each array, vary the scores to reflect different levels of connection—strong, moderate, weak, or none. Avoid giving the same score for all tags unless they are truly equally relevant.
+        
+        7. Create ${process.env.NUMBER_OF_SUGGESTION_QNA} suggested questions and their answers, label them as "SuggestedQnA". Ensure the "SuggestedQnA" section follows this format: "1. question1? answer1. 2. question2? answer2. 3. question3? answer3."
+        8.Provide the response in clean formate and avoid using special characters like '*' or '\n'.`
+          // }
         }
       ];
 
@@ -155,6 +171,7 @@ class GptService {
 
       const parsedResponse = gptResponseSchema.parse(response);
       const result = parsedResponse.choices[0].message;
+
       return { result, usage };
 
     } catch (error) {
@@ -162,10 +179,6 @@ class GptService {
       return error;
     }
   }
-
-
-
-
 
 
 
@@ -208,11 +221,11 @@ class GptService {
           - Compassion: News expressing empathy for those facing hardships or suffering.
           - Support: Stories that offer encouragement and assistance to affected individuals or communities.
           - Solidarity: News that unites people in shared understanding or support for a cause.
-          `
+          // 4.Ensure that all generated news content is entirely free of unnecessary characters such as \n, *, extra spaces, or any other extraneous symbols. The content must be precise, clean, and meticulously formatted to maintain a high standard of readability and professionalism. Every element should be concise and well-structured, leaving no room for any formatting errors or irrelevant details.`
         }
       ];
       const response = await openai.chat.completions.create({
-        model: 'gpt-3.5-turbo-0125',
+        model: 'gpt-4o-mini',
         messages: messages,
         temperature: 0,
         max_tokens: 1000,
@@ -254,7 +267,7 @@ class GptService {
   async chatGPTAns(context, question) {
     console.log('Sending Question to GPT')
     const response = await openai.chat.completions.create({
-      model: 'gpt-3.5-turbo-0125',
+      model: 'gpt-4o-mini',
       messages: [
         {
           role: "system",
@@ -294,7 +307,7 @@ class GptService {
         }
       ]
       const response = await openai.chat.completions.create({
-        model: 'gpt-3.5-turbo-0125',
+        model: 'gpt-4o-mini',
         messages: messages,
         temperature: 0,
         max_tokens: 2000,
@@ -349,7 +362,7 @@ class GptService {
         instructions,
         name: "News Assistant",
         tools: [{ type: "code_interpreter" }],
-        model: "gpt-3.5-turbo-0125",
+        model: "gpt-4o-mini",
       });
       console.log("Assistant Created");
       return myAssistant;
