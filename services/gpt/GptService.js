@@ -145,11 +145,6 @@ class GptService {
         6. the numerical similarity scores in a single line, removing any preceding serial numbers or letters.Compare the news article provided above with each array from the trending tags below. Assign a similarity score out of 10 for each array based on any related connections, such as themes, locations, events, or individuals. A high similarity score should be given if the array is strongly related to the news article, and a low similarity score should be given if it is not very related. Even weak or indirect connections should be considered when assigning scores. Also, ensure that strong, direct connections receive appropriately higher scores.
           Provide only
           Trending Tags: ${trends}
-        // 6.Compare the news article provided above with each array from the trending tags below. Assign a similarity score out of 10 for each array based on any related connections,such as themes, locations, events, or individuals. A high similarity score means the array is highly related to the news article, and a low similarity score means it is not very related.Provide numerical scores donly and not Nan or undefined. Even weak or indirect connections should be considered when assigning scores. Provide only the similarity scores in a single line, removing any preceding serial numbers or letters.
-        //  ${trends} 
-        // 6. Carefully analyze the news article below and compare it with each array from the trending tags provided. Look for any possible connections, including direct, indirect, or even loose thematic links. Consider relationships in terms of people, events, locations, or shared concepts.
-           When assigning a similarity score out of 10 for each array, vary the scores to reflect different levels of connection—strong, moderate, weak, or none. Avoid giving the same score for all tags unless they are truly equally relevant.
-        
         7. Create ${process.env.NUMBER_OF_SUGGESTION_QNA} suggested questions and their answers, label them as "SuggestedQnA". Ensure the "SuggestedQnA" section follows this format: "1. question1? answer1. 2. question2? answer2. 3. question3? answer3."
         8.Provide the response in clean formate and avoid using special characters like '*' or '\n'.`
           // }
