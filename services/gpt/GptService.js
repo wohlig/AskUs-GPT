@@ -127,7 +127,6 @@ class GptService {
     });
 
     try {
-      // console.log("context",context)
       console.log("trends", trends)
       const messages = [
         {
