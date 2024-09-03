@@ -74,7 +74,6 @@ class GptService {
     }
     console.log("Sending News to GPT", language);
     try {
-      console.log(trends);
       const messages = [
         {
           role: "system",
