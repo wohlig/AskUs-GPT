@@ -14,7 +14,7 @@ class GptService {
   async removeCombinedNews(gnewsTitle) {
     console.log('Removing combined news')
     const response = await openai.chat.completions.create({
-      model: 'gpt-4o-mini',
+      model: 'gpt-3.5-turbo-0125',
       messages: [
         {
           role: "system",
@@ -42,7 +42,7 @@ class GptService {
   async getAnsFromGPT(context, question) {
     console.log('Sending Question to GPT')
     const response = await openai.chat.completions.create({
-      model: 'gpt-4o-mini',
+      model: 'gpt-3.5-turbo-0125',
       messages: [
         {
           role: "system",
@@ -303,7 +303,7 @@ class GptService {
         }
       ]
       const response = await openai.chat.completions.create({
-        model: 'gpt-4o-mini',
+        model: 'gpt-3.5-turbo-0125',
         messages: messages,
         temperature: 0,
         max_tokens: 2000,
