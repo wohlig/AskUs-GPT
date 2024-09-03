@@ -93,4 +93,15 @@ const deleteAssistant = async (req, res) => {
 }
 router.post('/deleteAssistant', deleteAssistant);
 
+const getTrendingTopics = async (req, res) => {
+  try{
+    const result = await gptServices.getTrendingTitlesFromGpt(req.body);
+    console.log("🚀 ~ getTrendingTopics ~ result:", result)
+    res.json({data:result});
+  }catch(error){
+    console.log("Trending topics error", error);
+  }
+}
+router.post('/getTrendingTopics', getTrendingTopics);
+
 module.exports = router

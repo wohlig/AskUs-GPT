@@ -215,7 +215,9 @@ class GptService {
           - Compassion: News expressing empathy for those facing hardships or suffering.
           - Support: Stories that offer encouragement and assistance to affected individuals or communities.
           - Solidarity: News that unites people in shared understanding or support for a cause.
+
           4.Ensure that all generated news content is entirely free of unnecessary characters such as \n, *, extra spaces, or any other extraneous symbols. The content must be precise, clean, and meticulously formatted to maintain a high standard of readability and professionalism. Every element should be concise and well-structured, leaving no room for any formatting errors or irrelevant details.`
+
         }
       ];
       const response = await openai.chat.completions.create({
@@ -426,6 +428,44 @@ class GptService {
       console.log("Error while deleting the AssistantID");
     }
   }
+  async getTrendingTitlesFromGpt(topics, interval = 3000, maxAttempts = 15) {
+    try{
+      console.log("topics",topics)
+      let prompt=`Convert the following each topics into one small topic of 2-3 words: ${topics.map((item) =>   (item.map((topic)=> (topic))))} list each topic with separeted by ',' rather than listing them all with numbers and avoid giving me any special character like '**','\n'  in response`;
+      const message = 
+          {role: "system",
+          content: prompt}
+     
+      ;
+     topics.map((item) =>   (item.map((topic)=> console.log("message data",topic))))
+     
+      // console.log("🚀 ~ GptService ~ getTrendingTitlesFromGpt ~ prompt:", prompt)
+    
+
+      // console.log("🚀 ~ GptService ~ getTrendingTitlesFromGpt ~ prompt:", messages)
+    const response = await openai.chat.completions.create({
+      model: "gpt-3.5-turbo-0125",
+      messages: [
+        {role: "system",
+          content: prompt},
+        {
+          role: "user",
+          content: `This is the content of the article topic: ${topics.map((group, index) => `${index + 1}. ${group.join(', ')}`).join('\n')}`,
+        },
+        {
+          role: "assistant",
+          content: "Answer: ",
+        },
+      ],
+      max_tokens: 150
+    });
+    console.log("🚀 ~ GptService ~ getTrendingTitlesFromGpt ~ response:", response.choices[0].message.content.trim())
+    const titles = response.choices[0].message.content.trim();
+    console.log(titles)
+    return titles
+  }catch(error){
+    console.log("Error while getting Trending topics",error)
+  }}
 }
 
 module.exports = new GptService();
