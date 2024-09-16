@@ -2,7 +2,7 @@ const OpenAI = require("openai");
 const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY
 })
-
+// const trendingTopics=require('')
 const axios = require('axios')
 const fs = require('fs')
 class GptService {
@@ -370,6 +370,78 @@ class GptService {
       console.log("Error while deleting the AssistantID");
     }
   }
+
+  async getTrendingTitlesFromGpt(topics,trendingData,interval = 3000, maxAttempts = 15) {
+    try{
+      let dbTopics=[]
+     
+      trendingData.map((data)=>{
+        if(data.data && data.data!='') dbTopics.push(data.data)
+        })
+      // Step to remove topics that are already related to `dbTopics`
+      let filteredTopics = []
+      topics.map(group => {
+        for(let item of dbTopics){
+          if(!group.includes(item)){
+              filteredTopics.push(group)
+              break
+        }
+        }}
+      );
+     
+      // Provide the result as a comma-separated list of short topics, ensuring each short topic is unique and does not repeat or overlap with any of the topics in ${dbTopics}. Please only provide the short topics without repeating the original topics.`;
+      const prompt = `
+Given the following list of topics:
+
+${filteredTopics}
+
+Please generate a short topic (maximum 2 words) for each item, treating each item as a single topic. Exclude any topics related to the following restricted subjects:
+
+${dbTopics}
+
+If all topics are related to the restricted subjects, provide no response.
+`;
+      const message = {
+          role: "system",
+          content: prompt
+        };
+      //topics.map((item) => (item.map((topic)=>topic)))
+      let response
+      if(filteredTopics.length>0){
+         response = await openai.chat.completions.create({
+         model: "gpt-3.5-turbo-0125",
+         messages: [
+          { 
+          role: "system",
+          content: prompt 
+          },
+          {
+          role: "user",
+          content: `This is the content of the article topic: ${filteredTopics}`,
+          },
+          {
+          role: "assistant",
+          content: "Answer: ",
+          },
+          ],      
+          max_tokens: 150
+        })
+      }
+      let titles
+      let finalData
+      //console.log('response',response.choices[0].message.content.trim())
+      if(response && response.choices[0].message.content.trim().includes('No response')){
+        titles = response.choices[0].message.content.trim()
+        finalData=titles.split(",")
+        return finalData
+      }
+      else
+        titles=""
+      
+      return titles
+  }catch(error){
+    console.log("Error while getting Trending topics",error)
+  }}
 }
 
 module.exports = new GptService();

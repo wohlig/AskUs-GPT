@@ -19,7 +19,7 @@ const { uuid } = require("uuidv4");
 const { Pinecone } = require("@pinecone-database/pinecone");
 
 const pinecone = new Pinecone({
-  apiKey: process.env.PINECONE_API_KEY2,
+  apiKey: process.env.PINECONE_GOOGLE_API_KEY,
 });
 // const RagDocs = require("../../mongooseSchema/RagDocs");
 // const { compile } = require("html-to-text");
