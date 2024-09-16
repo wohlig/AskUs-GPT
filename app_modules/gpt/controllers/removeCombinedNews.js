@@ -36,9 +36,12 @@ const validationSchema = {
 const validation = (req, res, next) => {
   return validationOfAPI(req, res, next, validationSchema, 'body')
 }
+console.log("🚀 ~ validation ~ validation:", validation)
 const removeCombinedNews = async (req, res) => {
+  console.log("into combined news");
   try {
     const result = await gptServices.removeCombinedNews(req.body.gnewsTitle)
+    console.log("🚀 ~ removeCombinedNews ~ result:", result)
     res.sendJson({ type: __constants.RESPONSE_MESSAGES.SUCCESS, data: { data: result } })
   } catch (err) {
     console.log('removeCombinedNews Error', err)
