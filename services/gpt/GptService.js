@@ -14,7 +14,7 @@ class GptService {
   async removeCombinedNews(gnewsTitle) {
     console.log('Removing combined news')
     const response = await openai.chat.completions.create({
-      model: 'gpt-3.5-turbo-0125',
+      model: 'gpt-4o-mini',
       messages: [
         {
           role: "system",
@@ -42,7 +42,7 @@ class GptService {
   async getAnsFromGPT(context, question) {
     console.log('Sending Question to GPT')
     const response = await openai.chat.completions.create({
-      model: 'gpt-3.5-turbo-0125',
+      model: 'gpt-4o-mini',
       messages: [
         {
           role: "system",
@@ -72,7 +72,7 @@ class GptService {
   async getContentFromGPT(context, language, type, trends, max_tokens = 2000, model = "gpt-4o-mini") {
     if (type === "YouTube") {
       max_tokens = 3000;
-      model = "gpt-4o-mini";
+      model = "gpt-3.5-turbo-0125";
 
     }
 
@@ -303,7 +303,7 @@ class GptService {
         }
       ]
       const response = await openai.chat.completions.create({
-        model: 'gpt-3.5-turbo-0125',
+        model: 'gpt-4o-mini',
         messages: messages,
         temperature: 0,
         max_tokens: 2000,
@@ -358,7 +358,7 @@ class GptService {
         instructions,
         name: "News Assistant",
         tools: [{ type: "code_interpreter" }],
-        model: "gpt-4o-mini",
+        model: "gpt-4o",
       });
       console.log("Assistant Created");
       return myAssistant;
@@ -428,44 +428,6 @@ class GptService {
       console.log("Error while deleting the AssistantID");
     }
   }
-  async getTrendingTitlesFromGpt(topics, interval = 3000, maxAttempts = 15) {
-    try{
-      console.log("topics",topics)
-      let prompt=`Convert the following each topics into one small topic of 2-3 words: ${topics.map((item) =>   (item.map((topic)=> (topic))))} list each topic with separeted by ',' rather than listing them all with numbers and avoid giving me any special character like '**','\n'  in response`;
-      const message = 
-          {role: "system",
-          content: prompt}
-     
-      ;
-     topics.map((item) =>   (item.map((topic)=> console.log("message data",topic))))
-     
-      // console.log("🚀 ~ GptService ~ getTrendingTitlesFromGpt ~ prompt:", prompt)
-    
-
-      // console.log("🚀 ~ GptService ~ getTrendingTitlesFromGpt ~ prompt:", messages)
-    const response = await openai.chat.completions.create({
-      model: "gpt-3.5-turbo-0125",
-      messages: [
-        {role: "system",
-          content: prompt},
-        {
-          role: "user",
-          content: `This is the content of the article topic: ${topics.map((group, index) => `${index + 1}. ${group.join(', ')}`).join('\n')}`,
-        },
-        {
-          role: "assistant",
-          content: "Answer: ",
-        },
-      ],
-      max_tokens: 150
-    });
-    console.log("🚀 ~ GptService ~ getTrendingTitlesFromGpt ~ response:", response.choices[0].message.content.trim())
-    const titles = response.choices[0].message.content.trim();
-    console.log(titles)
-    return titles
-  }catch(error){
-    console.log("Error while getting Trending topics",error)
-  }}
 }
 
 module.exports = new GptService();
