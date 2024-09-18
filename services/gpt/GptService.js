@@ -94,6 +94,7 @@ class GptService {
             console.log("result:", result)
             if (result.bullets) {
               result.bullets = result.bullets.split('\n').map(line => line.trim()).filter(line => line);
+              result.bullets=result.bullets.map(data=>data.replace(/[-\n]/g, '').trim())
             }
 
             if (result.suggestedqna) {
@@ -118,7 +119,7 @@ class GptService {
             }
             console.log("",result.similarities)
 
-
+            console.log('result',result)
             return result;
 
           })
