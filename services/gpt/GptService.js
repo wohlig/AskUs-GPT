@@ -425,6 +425,70 @@ class GptService {
       console.log("Error while deleting the AssistantID");
     }
   }
+
+  async getTrendingTitlesFromGpt(topics,trendingData,interval = 3000, maxAttempts = 15) {
+    try{
+      let dbTopics=[]
+      trendingData.map((data)=>{
+        if(data.data && data.data!='') dbTopics.push(data.data)
+        })
+      let filteredTopics = []
+      topics.map(group => {
+        for(let item of dbTopics){
+          if(!group.includes(item)){
+              filteredTopics.push(group)
+              break
+        }
+        }}
+      );
+     
+
+const prompt = `
+Generate one short topic (maximum 2 words) for each of the following items. Skip any topics related to the subjects: ${dbTopics}.If any topics is related to these subjects then do not provide a short topic for it.
+
+Items:
+${filteredTopics.join("\n")}
+
+If all topics are related to restricted subjects, provide no response.Dont Provide any special characters in response.
+`;
+
+      const message = {
+          role: "system",
+          content: prompt
+        };
+      //topics.map((item) => (item.map((topic)=>topic)))
+      let response
+      if(filteredTopics.length>0){
+         response = await openai.chat.completions.create({
+         model: "gpt-4o-mini",
+         messages : [
+          { 
+            role: "system",
+            content: "You are a helpful assistant."
+          },
+          {
+            role: "user",
+            content: prompt
+          }
+        ],   
+          max_tokens: 150
+        })
+      }
+      let titles
+      let finalData
+      if(response && !response.choices[0].message.content.trim().includes('No response')){
+        titles = response.choices[0].message.content.trim()
+        finalData=titles.split(",")
+        return finalData
+      }
+      else
+        titles=""
+      
+      return titles
+  }catch(error){
+    console.log("Error while getting Trending topics",error)
+  }}
+
 }
 
 module.exports = new GptService();
