@@ -425,6 +425,79 @@ class GptService {
       console.log("Error while deleting the AssistantID");
     }
   }
+
+  async getTrendingTitlesFromGpt(topics,trendingData,interval = 3000, maxAttempts = 15) {
+    try{
+      let dbTopics=[]
+      trendingData.map((data)=>{
+        if(data.data && data.data!='') dbTopics.push(data.data)
+        })
+      let filteredTopics = []
+      topics.map(group => {
+        for(let item of dbTopics){
+          if(!group.includes(item)){
+              filteredTopics.push(group)
+              break
+        }
+        }}
+      )
+      const prompt = `
+      You are given a list of restricted topics (previously generated or related content). For each item in the filtered list, generate one short topic (maximum 2 words) **only if** it is **not** related in any way to the restricted topics. A topic is considered "related" if it overlaps in meaning, context, or keywords with any of the restricted topics.
+      
+      Restricted topics:
+      ${dbTopics.join(", ")}
+      
+      Filtered topics:
+      ${filteredTopics.join("\n")}
+      
+      Instructions:
+      1. Compare each filtered topic against the restricted topics.
+      2. If a filtered topic is related to any restricted topic in meaning, context, or content (even if it is partially related), skip it and **do not** generate a short topic for it.
+      3. If a filtered topic is **not** related to any restricted topics, generate one short topic (maximum 2 words).
+      4. Avoid all special characters like '**', '-', or any punctuation in the generated topics.
+      5. Ensure no duplicate topics are generated.
+      6. If **all** filtered topics are related to restricted topics, provide 'No response' in response.
+      7.Also check the short topic you are providing is related to any restricted topics
+      8.Ensure that all generated news content is entirely free of unnecessary characters such as \n, *, extra spaces, or any other extraneous symbols. The content must be precise, clean, and meticulously formatted to maintain a high standard of readability and professionalism. Every element should be concise and well-structured, leaving no room for any formatting errors or irrelevant details. 
+      `;
+  
+
+      const message = {
+          role: "system",
+          content: prompt
+        };
+      let response
+      if(filteredTopics.length>0){
+         response = await openai.chat.completions.create({
+         model: "gpt-4o-mini",
+         messages : [
+          { 
+            role: "system",
+            content: "You are a helpful assistant."
+          },
+          {
+            role: "user",
+            content: prompt
+          }
+        ],   
+          max_tokens: 150
+        })
+      }
+      let titles
+      let finalData
+      if(response && !response.choices[0].message.content.trim().includes('No response')){
+        titles = response.choices[0].message.content.trim()
+        finalData=titles.split(",")
+        return finalData
+      }
+      else
+        titles=""
+      
+      return titles
+  }catch(error){
+    console.log("Error while getting Trending topics",error)
+  }}
+
 }
 
 module.exports = new GptService();
