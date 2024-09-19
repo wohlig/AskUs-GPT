@@ -300,7 +300,7 @@ class GptService {
         instructions,
         name: "News Assistant",
         tools: [{ type: "code_interpreter" }],
-        model: "gpt-3.5-turbo-0125",
+        model: "gpt-4o-mini",
       });
       console.log("Assistant Created");
       return myAssistant;
