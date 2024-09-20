@@ -27,7 +27,7 @@ const validationSchema = {
   type: 'object',
   required: true,
   properties: {
-    fullContent: {
+    gnewsTitle: {
       type: 'string',
       required: true
     }
@@ -38,7 +38,8 @@ const validation = (req, res, next) => {
 }
 const removeCombinedNews = async (req, res) => {
   try {
-    const result = await gptServices.removeCombinedNews(req.body.fullContent)
+    
+    const result = await gptServices.removeCombinedNews(req.body.gnewsTitle)
     res.sendJson({ type: __constants.RESPONSE_MESSAGES.SUCCESS, data: { data: result } })
   } catch (err) {
     console.log('removeCombinedNews Error', err)
