@@ -136,7 +136,7 @@ class GptService {
         6. the numerical similarity scores in a single line, removing any preceding serial numbers or letters.Compare the news article provided above with each array from the trending tags below. Assign a similarity score out of 10 for each array based on any related connections, such as themes, locations, events, or individuals. A high similarity score should be given if the array is strongly related to the news article, and a low similarity score should be given if it is not very related. Even weak or indirect connections should be considered when assigning scores. Also, ensure that strong, direct connections receive appropriately higher scores.
           Provide only
           Trending Tags: ${trends}
-        7. Create ${process.env.NUMBER_OF_SUGGESTION_QNA} suggested questions and their answers, label them as "SuggestedQnA". Ensure the "SuggestedQnA" section follows this format: "1. question1? answer1. 2. question2? answer2. 3. question3? answer3."
+        7. Create ${process.env.NUMBER_OF_SUGGESTION_QNA} suggested questions and their answers, label them as "SuggestedQnA". Ensure the "SuggestedQnA" section follows this format: "1. question1? answer1. 2. question2? answer2. 3. question3? answer3.And Provide the \n between lists"
         8.Provide the response in clean format and avoid using special characters like '*' or '\n'.`
         }
       ];
