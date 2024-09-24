@@ -346,7 +346,7 @@ class GptService {
         tools: [{ type: "code_interpreter" }],
         model: "gpt-4o-mini",
       });
-      console.log("Assistant Created");
+      console.log("Assistant Created", myAssistant.id);
       return myAssistant.id;
     } catch (error) {
       console.error("An error occurred during interaction:", error);
