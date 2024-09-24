@@ -38,7 +38,6 @@ const validation = (req, res, next) => {
 }
 const removeCombinedNews = async (req, res) => {
   try {
-    
     const result = await gptServices.removeCombinedNews(req.body.gnewsTitle)
     res.sendJson({ type: __constants.RESPONSE_MESSAGES.SUCCESS, data: { data: result } })
   } catch (err) {
