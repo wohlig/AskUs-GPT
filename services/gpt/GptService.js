@@ -380,7 +380,7 @@ class GptService {
         model: "gpt-4o-mini",
       });
       console.log("Assistant Created", myAssistant.id);
-      return myAssistant.id;
+      return myAssistant;
     } catch (error) {
       console.error('An error occurred during interaction:', error)
     }
