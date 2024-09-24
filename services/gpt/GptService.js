@@ -375,12 +375,12 @@ class GptService {
 
       const myAssistant = await openai.beta.assistants.create({
         instructions,
-        name: 'News Assistant',
-        tools: [{ type: 'code_interpreter' }],
-        model: 'gpt-4o-mini'
-      })
-      console.log('Assistant Created')
-      return myAssistant.id
+        name: "News Assistant",
+        tools: [{ type: "code_interpreter" }],
+        model: "gpt-4o-mini",
+      });
+      console.log("Assistant Created", myAssistant.id);
+      return myAssistant.id;
     } catch (error) {
       console.error('An error occurred during interaction:', error)
     }
@@ -523,4 +523,4 @@ class GptService {
   }
 }
 
-module.exports = new GptService()
+module.exports = new GptService();
