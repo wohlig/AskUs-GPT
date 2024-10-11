@@ -1,3 +1,4 @@
+
 const pdf_parse = require("pdf-parse");
 // const { CSVLoader } = require("@langchain/community/document_loaders/fs/csv");
 // const __constants = require("../../config/constants");
@@ -26,7 +27,6 @@ const pinecone = new Pinecone({
 // const {
 //   RecursiveUrlLoader,
 // } = require("@langchain/community/document_loaders/web/recursive_url");
-
 const index = pinecone.index("budget-rag");
 
 class BudgetService {
@@ -67,6 +67,7 @@ class BudgetService {
           },
         ],
       });
+
       // summary template for creating useful insights as per the persona
       const summaryTemplate = `
         You are an expert in creating insights from national budget documents. Your goal is to create insights based on the persona provided. 
@@ -85,7 +86,6 @@ class BudgetService {
         -------- {text} --------
   
         Total output will be useful insights based on the persona provided.
-  
         INSIGHTS:
         `;
 
@@ -331,3 +331,4 @@ class BudgetService {
   }
 }
 module.exports = new BudgetService();
+
