@@ -365,76 +365,109 @@ class GptService {
     }
   }
 
-  async getTrendingTitlesFromGpt (topics, trendingData, interval = 3000, maxAttempts = 15) {
-    try {
-      const dbTopics = []
-      trendingData.map((data) => {
-        if (data.data && data.data != '') dbTopics.push(data.data)
-      })
-      const filteredTopics = []
+  async getTrendingTitlesFromGpt(topics,trendingData,interval = 3000, maxAttempts = 15) {
+    try{
+      let dbTopics=[]
+      trendingData.map((data)=>{
+        if(data.data && data.data!='') dbTopics.push(data.data)
+        })
+      let filteredTopics = []
       topics.map(group => {
-        for (const item of dbTopics) {
-          if (!group.includes(item)) {
-            filteredTopics.push(group)
-            break
-          }
+      if(dbTopics.length>0){
+        for(let item of dbTopics){
+          if(!group.includes(item)){
+              filteredTopics.push(group)
+              break
+        }
         }
       }
+      else{
+        filteredTopics=topics
+      }
+    }
       )
-      const prompt = `
-      You are given a list of restricted topics (previously generated or related content). For each item in the filtered list, generate one short topic (maximum 2 words) **only if** it is **not** related in any way to the restricted topics. A topic is considered "related" if it overlaps in meaning, context, or keywords with any of the restricted topics.
-      
+    
+const prompt = `
+      You are given a list of restricted topics (previously generated or related content). For each item in the filtered list (which represents trends), generate one short, **specific** topic (maximum 2-3 words) that clearly represents the main point of the item. **Do not generate a topic** if it has any relation to the restricted topics in terms of meaning, context, or keywords.
       Restricted topics:
-      ${dbTopics.join(', ')}
+      ${dbTopics.join(', ') || 'None'}
       
       Filtered topics:
       ${filteredTopics.join('\n')}
       
       Instructions:
-      1. Compare each filtered topic against the restricted topics.
-      2. If a filtered topic is related to any restricted topic in meaning, context, or content (even if it is partially related), skip it and **do not** generate a short topic for it.
-      3. If a filtered topic is **not** related to any restricted topics, generate one short topic (maximum 2 words).
-      4. Avoid all special characters like '**', '-', or any punctuation in the generated topics.
-      5. Ensure no duplicate topics are generated.
-      6. If **all** filtered topics are related to restricted topics, provide 'No response' in response.
-      7.Also check the short topic you are providing is related to any restricted topics
-      8.Ensure that all generated news content is entirely free of unnecessary characters such as \n, *, extra spaces, or any other extraneous symbols. The content must be precise, clean, and meticulously formatted to maintain a high standard of readability and professionalism. Every element should be concise and well-structured, leaving no room for any formatting errors or irrelevant details. 
-      `
+      1. For each filtered topic:
+         - **Step 1: Language Check**
+            - Check if the language of the topic is English.
+               - If the topic is **not in English**, **skip generating that topic**.
+               - If the topic is already **in English**, proceed to the next steps.
+         
+         - **Step 2: Overlap Evaluation**
+            - Carefully compare the topic against each restricted topic.
+            - Identify any **direct or indirect overlap** in meaning, context, or keywords with the restricted topics.
+            - If the filtered topic **is related in any way** to any restricted topic, skip it and **do not generate a short topic** for it.
+         
+         - **Step 3: Topic Generation**
+            - If the filtered topic is **not related** to any restricted topics:
+               - Identify the main concept or key idea of the topic.
+               - Generate a short, specific topic (maximum 2 words) that captures the core idea of the filtered topic.
+               - If the generated topic seems unrecognizable or odd in 2 words, then extend it to **3 words**.
+               - Ensure the short topic does **not relate** to any restricted topics in terms of meaning or keywords.
+      
+      2. The generated short topic should be:
+         - Precise, concise, and free of unnecessary characters like punctuation or special symbols.
+         - Unique, and must not repeat any previous topics.
+      
+      3. Only provide the topics in the response, without additional explanations or reasoning.
+      
+      4. Ensure all generated content is clean, well-structured, and free of extraneous characters such as newlines, asterisks, or extra spaces. The formatting must be clear and professional.
+      
+      5. **Note**: Only skip generating a topic if there is a **clear and significant overlap** with the restricted topics or if the language is not English. If there is no significant overlap and the language is English, proceed with generating a short, specific topic.
+      
+      6. If all filtered topics are related to restricted topics or not in English, provide **'No response'**.
+
+      7. **Footer**: Include the generated topics at the end of your response in a clean, formatted manner.
+`;
+
+
+
+
 
       const message = {
-        role: 'system',
-        content: prompt
-      }
+          role: "system",
+          content: prompt
+        };
       let response
-      if (filteredTopics.length > 0) {
-        response = await openai.chat.completions.create({
-          model: 'gpt-4o-mini',
-          messages: [
-            {
-              role: 'system',
-              content: 'You are a helpful assistant.'
-            },
-            {
-              role: 'user',
-              content: prompt
-            }
-          ],
+      if(filteredTopics.length>0){
+         response = await openai.chat.completions.create({
+         model: "gpt-4o-mini",
+         messages : [
+          { 
+            role: "system",
+            content: "You are a helpful assistant."
+          },
+          {
+            role: "user",
+            content: prompt
+          }
+        ],   
           max_tokens: 150
         })
       }
       let titles
       let finalData
-      if (response && !response.choices[0].message.content.trim().includes('No response')) {
+      if(response && !response.choices[0].message.content.trim().includes('No response')){
         titles = response.choices[0].message.content.trim()
-        finalData = titles.split(',')
+        finalData=titles.split(",")
         return finalData
-      } else { titles = '' }
-
+      }
+      else
+        titles=""
+      
       return titles
-    } catch (error) {
-      console.log('Error while getting Trending topics', error)
-    }
-  }
+  }catch(error){
+    console.log("Error while getting Trending topics",error)
+  }}
 }
 
 module.exports = new GptService();
